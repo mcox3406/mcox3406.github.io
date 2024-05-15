@@ -1,8 +1,17 @@
-title: Just the Docs Template
-description: A starter template for a Jeykll site using the Just the Docs theme!
+title: ChE Miscellany
+description: Some useful chemical engineering information
 theme: just-the-docs
 
 url: https://mcox3406.github.io/
 
-aux_links:
-  Template Repository: https://github.com/just-the-docs/just-the-docs-template
+color_scheme: dark
+
+callouts:
+  warning:
+    title: Warning
+    color: red
+
+include:
+  - _pages
+
+math: katex
