@@ -1,0 +1,19 @@
+<aside class="side">
+  <a class="mark" href="{{ '/' | relative_url }}" aria-label="Home">{% include mark.svg %}</a>
+  <a class="name" href="{{ '/' | relative_url }}">{{ site.author.name }}</a>
+  {% if site.author.role %}<div class="role">{{ site.author.role }}</div>{% endif %}
+  <nav aria-label="Site">
+    {% for item in site.nav %}
+      {% assign is_current = false %}
+      {% if page.url == item.url %}{% assign is_current = true %}{% endif %}
+      {% if page.section and item.url contains page.section %}{% assign is_current = true %}{% endif %}
+      <a href="{{ item.url | relative_url }}"{% if is_current %} aria-current="page"{% endif %}>{{ item.title }}</a>
+    {% endfor %}
+  </nav>
+  <div class="links">
+    {% if site.author.email != "" %}<a href="mailto:{{ site.author.email }}">Email</a>{% endif %}
+    {% for l in site.links %}{% if l.url != "" %}<a href="{{ l.url }}" rel="me">{{ l.title }}</a>{% endif %}{% endfor %}
+    <a href="{{ '/feed.xml' | relative_url }}">RSS</a>
+  </div>
+  <button class="theme" type="button" data-theme-toggle>Toggle dark mode</button>
+</aside>

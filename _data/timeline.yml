@@ -1,0 +1,25 @@
+# Home-page timeline, newest first. Keep `detail` to a few words.
+- when: 2024 –
+  title: PhD candidate, Chemical Engineering, MIT
+  where: Coley Research Group
+  detail: LLMs for chemistry and materials science
+
+- when: 2024
+  title: BS, Chemical Engineering, Caltech
+  where: Computational track
+  detail:
+
+- when: 2023
+  title: Chemistry intern, D. E. Shaw Research
+  where: New York
+  detail: GNNs for drug discovery
+
+- when: 2022 – 23
+  title: Research intern, Protomer Technologies (Eli Lilly)
+  where: Pasadena
+  detail: Molecular sensor assays
+
+- when: 2021 – 24
+  title: Undergraduate research, Caltech
+  where: Hadt, Goddard, and Wang labs
+  detail: Spin dynamics, surface Pourbaix diagrams, molecular optimization

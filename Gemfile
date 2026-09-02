@@ -1,7 +1,16 @@
-source 'https://rubygems.org'
+source "https://rubygems.org"
 
-gem "jekyll", "~> 4.3.3" # installed by `gem jekyll`
-# gem "webrick"        # required when using Ruby >= 3 and Jekyll <= 4.2.2
+gem "jekyll", "~> 4.3"
+gem "kramdown-math-katex"   # server-side KaTeX rendering of $$ … $$
+gem "katex"                 # bundles katex.js; needs a JS runtime (node) at build time
 
-gem "just-the-docs", "0.8.2" # pinned to the current release
-# gem "just-the-docs"        # always download the latest release
+group :jekyll_plugins do
+  gem "jekyll-feed"
+  gem "jekyll-seo-tag"
+  gem "jekyll-sitemap"
+end
+
+# Ruby 3.4 no longer ships these as default gems
+gem "csv"
+gem "base64"
+gem "logger"

@@ -1,0 +1,9 @@
+# One entry per paper; the page sorts by year, newest first.
+# Fields: title, authors, venue, year, and any of doi, arxiv, pdf, code, note.
+# Write your own name as "M. Cox" so the page can bold it.
+- title: Harnessing AtomisticSkills for Agentic Atomistic Research
+  authors: B. Deng, B. Li, M. Cox, H. Chun, J. Nam, A. Lyssenko, S. Edamadaka, J. Ruza, X. Du, N. Segal, J. Diaz Sanchez, M. Xie, T. Perez, Y. Yao, M. Steiner, S. Majumdar, C. B. Musgrave III, A. Chandra, A. Patra, D. Hohl, C. W. Coley, J. Li, R. Gómez-Bombarelli
+  venue: arXiv preprint
+  year: 2026
+  arxiv: 2605.24002
+  note: co-second author

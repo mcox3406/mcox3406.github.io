@@ -1,0 +1,6 @@
+---
+layout: default
+---
+{% if page.title and page.show_title != false %}<h1>{{ page.title }}</h1>{% endif %}
+{% if page.description %}<p class="lede">{{ page.description }}</p>{% endif %}
+{{ content }}

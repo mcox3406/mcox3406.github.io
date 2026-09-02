@@ -1,0 +1,268 @@
+%-------------------------
+% Resume in Latex
+% Author : Jake Gutierrez
+% Based off of: https://github.com/sb2nov/resume
+% License : MIT
+%------------------------
+
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\usepackage{fontawesome5}
+\usepackage{multicol}
+\setlength{\multicolsep}{-3.0pt}
+\setlength{\columnsep}{-1pt}
+\input{glyphtounicode}
+
+
+%----------FONT OPTIONS----------
+% sans-serif
+% \usepackage[sfdefault]{FiraSans}
+% \usepackage[sfdefault]{roboto}
+% \usepackage[sfdefault]{noto-sans}
+% \usepackage[default]{sourcesanspro}
+
+% serif
+% \usepackage{CormorantGaramond}
+% \usepackage{charter}
+
+
+\pagestyle{fancy}
+\fancyhf{} % clear all header and footer fields
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Adjust margins
+\addtolength{\oddsidemargin}{-0.6in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1.19in}
+\addtolength{\topmargin}{-.8in}
+\addtolength{\textheight}{1.55in}
+
+\urlstyle{same}
+
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Sections formatting
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large\bfseries
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+% Ensure that generate pdf is machine readable/ATS parsable
+\pdfgentounicode=1
+
+%-------------------------
+% Custom commands
+\newcommand{\resumeItem}[1]{
+  \item\small{
+    {#1 \vspace{-2pt}}
+  }
+}
+
+\newcommand{\classesList}[4]{
+    \item\small{
+        {#1 #2 #3 #4 \vspace{-2pt}}
+  }
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{1.0\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & \textbf{\small #2} \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubSubheading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \textit{\small#1} & \textit{\small #2} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+    \item
+    \begin{tabular*}{1.001\textwidth}{l@{\extracolsep{\fill}}r}
+      \small#1 & \textbf{\small #2}\\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubItem}[1]{\resumeItem{#1}\vspace{-4pt}}
+
+\renewcommand\labelitemi{$\vcenter{\hbox{\tiny$\bullet$}}$}
+\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.0in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-7pt}}
+
+%-------------------------------------------
+%%%%%%  RESUME STARTS HERE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+%----------HEADING----------
+% \begin{tabular*}{\textwidth}{l@{\extracolsep{\fill}}r}
+%   \textbf{\href{http://sourabhbajaj.com/}{\Large Sourabh Bajaj}} & Email : \href{mailto:sourabh@sourabhbajaj.com}{sourabh@sourabhbajaj.com}\\
+%   \href{http://sourabhbajaj.com/}{http://www.sourabhbajaj.com} & Mobile : +1-123-456-7890 \\
+% \end{tabular*}
+
+\begin{center}
+    % {\Huge \scshape Matthew Cox} \\ \vspace{1pt}
+    % Cambridge, MA \\ \vspace{1pt}
+    {\Huge \scshape Matthew Cox} \\
+    \small \href{mailto:mcox340@mit.edu}{\raisebox{-0.2\height}\faEnvelope\  \underline{mcox340@mit.edu}} ~ 
+    \href{https://www.linkedin.com/in/mcox6782}{\raisebox{-0.2\height}\faLinkedin\ \underline{linkedin.com/in/mcox6782}}
+    \vspace{-8pt}
+\end{center}
+
+
+%-----------EDUCATION-----------
+\section{Education}
+  \resumeSubHeadingListStart
+    \resumeSubheading
+      {Massachusetts Institute of Technology}{Expected May 2029}
+      {PhD in Chemical Engineering}{Cambridge, MA}
+    \resumeSubheading
+      {California Institute of Technology}{June 2024}
+      {BS in Chemical Engineering (Computational Track); GPA: $4.1/4.0$}{Pasadena, CA}
+  \resumeSubHeadingListEnd
+
+%-----------PROFESSIONAL EXPERIENCE-----------
+\section{Professional Experience}
+  \resumeSubHeadingListStart
+
+  \resumeSubheading
+    {D.E. Shaw Research}{June 2023 -- September 2023}
+    {Chemistry Intern}{New York, NY}
+    \resumeItemListStart
+      \resumeItem{Developed predictive models using PyTorch-based graph neural networks for the accurate determination of atomic properties in drug discovery applications}
+      \resumeItem{Applied meta- and transfer learning strategies to enhance model accuracy across molecular datasets, overcoming challenges associated with data scarcity}
+      % \resumeItem{Employed RDKit for molecular data handling and visualization, facilitating the analysis of structural data for improved model performance}
+      \resumeItem{Authored and executed parallelized workflow scripts in Bash for high-throughput density functional theory computations, significantly expanding the molecular dataset for model training}
+    \resumeItemListEnd
+
+    \resumeSubheading
+      {Protomer Technologies/Eli Lilly and Company}{June 2022 -- March 2023}
+      {Research Intern}{Pasadena, CA}
+      \resumeItemListStart
+        \resumeItem{Designed a biochemical assay for quantifying small molecule interactions with molecular sensors and generated a comprehensive experimental dataset using this assay}
+        \resumeItem{Programmed a specialized Python package for the analysis of experimental data, streamlining the determination of binding affinities to support rapid sensor optimization}
+        \resumeItem{Optimized assay protocols, significantly improving its throughput and accuracy}
+      \resumeItemListEnd
+    \resumeSubHeadingListEnd
+
+%-----------RESEARCH EXPERIENCE-----------
+\section{Research Experience}
+  \resumeSubHeadingListStart
+
+  \resumeSubheading
+      {Massachusetts Institute of Technology}{September 2024 -- Present}
+      {Graduate Researcher, Coley Research Group}{Cambridge, MA}
+      \resumeItemListStart
+        \resumeItem{Ongoing research on post-training LLMs and building LLM agents for computational chemistry and materials science}
+      \resumeItemListEnd
+
+  \resumeSubheading
+      {California Institute of Technology}{June 2021 -- August 2024}
+      {Undergraduate Researcher, Hadt Lab}{Pasadena, CA}
+      \resumeItemListStart
+        \resumeItem{Developed a novel computational framework for the prediction of electron spin-spin relaxation rates in molecules and solids, combining quantum dynamics calculations with machine learning techniques}
+        \resumeItem{Utilized Caltech's high-performance computing cluster for cluster-correlation expansion theory simulations to develop new models for qubit decoherence}
+      \resumeItemListEnd
+
+      \vspace*{-0.6cm}
+      \resumeSubheading
+      {}{}
+      {Undergraduate Researcher, Goddard Lab}{Pasadena, CA}
+      \resumeItemListStart
+        \resumeItem{Designed a new approach for the simulation of surface Pourbaix diagrams, enabling fast prediction of the surface states of materials in aqueous environments}
+        \resumeItem{Integrated Monte Carlo sampling and density functional theory calculations with an active learning algorithm}
+      \resumeItemListEnd
+
+      \vspace*{-0.6cm}
+      \resumeSubheading
+      {}{}
+      {Undergraduate Researcher, Wang Lab}{Pasadena, CA}
+      \resumeItemListStart
+        \resumeItem{Implemented a graph-based genetic algorithm in Julia for the rapid optimization of molecular structures for chemical engineering applications}
+      \resumeItemListEnd
+    
+      \vspace*{-0.6cm}
+      \resumeSubheading
+      {}{}
+      {John Stauffer Summer Undergraduate Research Fellow, Hadt Lab}{Pasadena, CA}
+      \resumeItemListStart
+        \resumeItem{Analyzed electron spin-lattice relaxation rates in nitroxyl radicals, identifying the impact of spin-phonon coupling}
+        \resumeItem{Performed computational analyses using Python, Mathematica, and ORCA, coupled with experimental synthesis and molecular characterization using mass spectrometry, NMR, and EPR techniques}
+      \resumeItemListEnd
+      
+  \resumeSubHeadingListEnd
+\vspace{-16pt}
+
+%-----------TEACHING EXPERIENCE-----------
+\section{Teaching Experience}
+  \resumeSubHeadingListStart
+  \resumeSubheading
+      {California Institute of Technology}{January 2023 -- June 2024}
+      {Teaching Assistant for ChE 105/CDS 110, ChE 62, \& ChE 15}{Pasadena, CA}
+      \resumeItemListStart
+        \resumeItem{Facilitated student learning in Dynamics and Control of Chemical Systems by guiding the application of Matlab for complex chemical engineering analyses and system control tasks}
+        \resumeItem{Helped lead instruction in Introduction to Chemical Engineering Computation, emphasizing the practical use of computational tools (primarily Python) in chemical engineering}
+        % \resumeItem{Crafted and delivered comprehensive class-wide presentations on programming concepts, enhancing students' understanding of computational methods in engineering}
+      \resumeItemListEnd
+  \resumeSubHeadingListEnd
+
+%-----------PROGRAMMING SKILLS-----------
+\section{Technical Skills}
+ \begin{itemize}[leftmargin=0.15in, label={}]
+    \small{\item{
+     \textbf{Languages}{: Python (PyTorch, TensorFlow, scikit-learn, NumPy, Pandas, RDKit), Julia, Mathematica, Matlab, Bash} \\
+     \textbf{Scientific Software}{: ORCA, VASP, Psi4, Avogadro, pyMOL, LAMMPS, AmberTools, VMD} \\
+     \textbf{Tools}{: Git, LaTeX, VS Code} \\
+    }}
+ \end{itemize}
+ \vspace{-16pt}
+
+
+
+%-----------INVOLVEMENT---------------
+% \section{Activities and Leadership}
+%     \resumeSubHeadingListStart
+
+%       \resumeSubheading
+%             {American Institute of Chemical Engineers}{2022 -- 2024}
+%             {President (2023-2024) / Vice President (2022 – 2023) / Chem-E-Car Manager (2021-2022)}{Caltech}
+%             \resumeItemListStart
+%               \resumeItem{Elected as President, previously Vice President, of Caltech AIChE, leading the organization's strategic planning, events, and membership engagement}
+%               \resumeItem{As Chem-E-Car Manager, led the design and construction of a small-scale Chem-E-Car, including the integration of an iodine clock reaction timing mechanism with zinc-manganese battery packs using an Arduino}
+%             \resumeItemListEnd
+    
+%         \resumeSubheading
+%           {NCAA Division III Intercollegiate Baseball}{2020 -- 2023}
+%           {Team Member}{Caltech}
+%           \resumeItemListStart
+%               \resumeItem{Competed in the Southern California Intercollegiate Athletic Conference (SCIAC) as a pitcher for the Caltech Beavers baseball team}
+%             \resumeItemListEnd
+
+        
+%     \resumeSubHeadingListEnd
+
+
+
+\end{document}

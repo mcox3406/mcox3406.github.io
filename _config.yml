@@ -1,17 +1,61 @@
-title: ChE Miscellany
-description: Some useful chemical engineering information
-theme: just-the-docs
+title: Matthew Cox
+description: PhD candidate in chemical engineering at MIT working on machine learning and LLMs for molecular design and discovery.
+url: https://mcox3406.github.io
+baseurl: ""
+lang: en
 
-url: https://mcox3406.github.io/
+author:
+  name: Matthew Cox
+  role: PhD candidate, MIT ChemE<br>Coley Research Group
+  email: mcox340@mit.edu
 
-color_scheme: dark
+# Sidebar navigation, in order
+nav:
+  - { title: About,        url: / }
+  - { title: Publications, url: /publications/ }
+  - { title: Blog,         url: /blog/ }
+  - { title: CV,           url: /assets/cv.pdf }
 
-callouts:
-  warning:
-    title: Warning
-    color: red
+# Sidebar links (leave a url blank to hide it)
+links:
+  - { title: Google Scholar, url: "" }
+  - { title: GitHub,         url: "https://github.com/mcox3406" }
+  - { title: LinkedIn,       url: "https://www.linkedin.com/in/mcox6782/" }
+  - { title: ORCID,          url: "" }
 
-include:
-  - _pages
+permalink: /blog/:year/:title/
 
-math: katex
+markdown: kramdown
+kramdown:
+  input: GFM
+  math_engine: katex
+  math_engine_opts:
+    trust: true
+    strict: false
+    throw_on_error: false
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    css_class: highlight
+
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+feed:
+  path: feed.xml
+
+defaults:
+  - scope: { path: "", type: posts }
+    values: { layout: post, section: blog }
+  - scope: { path: "" }
+    values: { layout: page }
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - LICENSE
+  - vendor
+  - notebooks
+  - cv-src

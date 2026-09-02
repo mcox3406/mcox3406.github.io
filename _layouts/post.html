@@ -1,0 +1,18 @@
+---
+layout: default
+---
+<article>
+  <header>
+    <div class="meta">
+      <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%-d %B %Y" }}</time>
+      {% if page.tags.size > 0 %}<span class="tags">{% for t in page.tags %}<span>{{ t }}</span>{% endfor %}</span>{% endif %}
+    </div>
+    <h1>{{ page.title }}</h1>
+    {% if page.description %}<p class="lede">{{ page.description }}</p>{% endif %}
+  </header>
+  {{ content }}
+</article>
+<nav class="postnav" aria-label="Post navigation">
+  <a href="{{ '/blog/' | relative_url }}">&larr; Blog</a>
+  {% if page.next %}<a href="{{ page.next.url | relative_url }}">{{ page.next.title }} &rarr;</a>{% endif %}
+</nav>

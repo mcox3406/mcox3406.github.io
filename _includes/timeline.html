@@ -1,0 +1,11 @@
+<ol class="timeline">
+{% for t in site.data.timeline %}
+  <li>
+    <div class="when">{{ t.when }}</div>
+    <div>
+      <div class="what">{{ t.title }}{% if t.where %}<span class="where">{{ t.where }}</span>{% endif %}</div>
+      {% if t.detail %}<div class="detail">{{ t.detail }}</div>{% endif %}
+    </div>
+  </li>
+{% endfor %}
+</ol>
