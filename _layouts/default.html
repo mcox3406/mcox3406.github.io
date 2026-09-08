@@ -4,6 +4,11 @@
   {% include head.html %}
 </head>
 <body>
+  {% if page.layout == 'home' %}
+  <div class="molecular-landscape" aria-hidden="true">
+    {% include molecular-landscape.svg %}
+  </div>
+  {% endif %}
   <div class="layout">
     {% include sidebar.html %}
     <main id="main">

@@ -14,6 +14,7 @@ Personal academic site, built with Jekyll and deployed to GitHub Pages by the wo
 | Blog posts | `_posts/YYYY-MM-DD-slug.md`, with figures, data and notebooks in `assets/posts/<slug>/` |
 | Styles | `assets/css/main.css` |
 | Sidebar mark (unit cell) | `_includes/mark.svg`, favicon in `assets/favicon.svg` |
+| Homepage molecular landscape | `_includes/molecular-landscape.svg`; placement and opacity in the home section of `assets/css/main.css` |
 
 ## Writing a post
 
