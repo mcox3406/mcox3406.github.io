@@ -5,6 +5,14 @@ _site/
 .bundle/
 vendor/
 .DS_Store
+node_modules/
+.wrangler/
+.dev.vars
+.dev.vars.*
+.env
+.env.*
+!.env.example
+local-notes/
 
 # LaTeX build files
 *.aux

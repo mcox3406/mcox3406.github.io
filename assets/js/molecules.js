@@ -31,7 +31,7 @@
   Mol.prototype.degree = function (i) { var d = 0; this.bonds.forEach(function (b) { if (b[0] === i || b[1] === i) d++; }); return d; };
   Mol.prototype.center = function (ring) { var c = [0, 0]; for (var i = 0; i < ring.length; i++) c = add(c, this.atoms[ring[i]]); return [c[0] / ring.length, c[1] / ring.length]; };
 
-  // regular n-gon centred at c, first vertex at angle a0
+  // regular n-gon centered at c, first vertex at angle a0
   Mol.prototype.ring = function (n, c, a0) {
     var R = 1 / (2 * Math.sin(Math.PI / n)), ids = [], i;
     for (i = 0; i < n; i++) ids.push(this.addAtom(add(c, rot([R, 0], a0 - 360 * i / n))));

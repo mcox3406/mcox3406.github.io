@@ -159,7 +159,7 @@ pre code { font-size: inherit; background: none; padding: 0; }
 div.highlighter-rouge:hover .copy, .copy:focus-visible { opacity: 1; }
 .copy:hover { color: var(--ink); }
 
-/* Rouge token colours */
+/* Rouge token colors */
 .highlight .k, .highlight .kd, .highlight .kn, .highlight .kp, .highlight .kr, .highlight .kt, .highlight .ow { color: var(--c-kw); }
 .highlight .s, .highlight .s1, .highlight .s2, .highlight .sd, .highlight .sb, .highlight .sh, .highlight .si, .highlight .se, .highlight .sr, .highlight .ss, .highlight .sx { color: var(--c-str); }
 .highlight .c, .highlight .c1, .highlight .cm, .highlight .cp, .highlight .cs { color: var(--c-cm); font-style: italic; }

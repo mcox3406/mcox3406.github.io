@@ -2,7 +2,8 @@ title: Matthew Cox
 description: PhD candidate in chemical engineering at MIT working on machine learning and LLMs for molecular design and discovery.
 url: https://mcox3406.github.io
 baseurl: ""
-lang: en
+lang: en-US
+running_sync_url: https://personal-running-sync.mcoxcaltech.workers.dev
 
 author:
   name: Matthew Cox
@@ -14,6 +15,7 @@ nav:
   - { title: About,        url: / }
   - { title: Publications, url: /publications/ }
   - { title: Blog,         url: /blog/ }
+  - { title: Fun,          url: /fun/ }
   - { title: CV,           url: /assets/cv.pdf }
 
 # Sidebar links (leave a url blank to hide it)
@@ -59,3 +61,6 @@ exclude:
   - vendor
   - notebooks
   - cv-src
+  - tests
+  - services
+  - local-notes

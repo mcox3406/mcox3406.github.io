@@ -9,12 +9,13 @@
     {% include molecular-landscape.svg %}
   </div>
   {% endif %}
-  <div class="layout">
+  <div class="layout{% if page.wide %} layout-wide{% endif %}">
     {% include sidebar.html %}
     <main id="main">
       {{ content }}
     </main>
   </div>
   <script src="{{ '/assets/js/site.js' | relative_url }}" defer></script>
+  {% for script in page.scripts %}<script src="{{ script | relative_url }}" defer></script>{% endfor %}
 </body>
 </html>

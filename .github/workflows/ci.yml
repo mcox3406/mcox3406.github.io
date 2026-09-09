@@ -15,4 +15,5 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
+      - run: node --test tests/milepost*.test.js
       - run: bundle exec jekyll build

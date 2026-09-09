@@ -1,0 +1,15 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "personal-running-sync",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-09-08",
+  "workers_dev": true,
+  "observability": { "enabled": false },
+  "durable_objects": { "bindings": [{ "name": "RUNNING", "class_name": "PersonalRunningSync" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["PersonalRunningSync"] }],
+  "vars": {
+    "SITE_URL": "https://mcox3406.github.io/fun/running/",
+    "SERVICE_URL": "https://personal-running-sync.mcoxcaltech.workers.dev",
+    "MCP_SCOPES": "read activity:read_all"
+  }
+}
