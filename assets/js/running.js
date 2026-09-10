@@ -5,13 +5,12 @@
   const $ = id => document.getElementById('rn-' + id);
   const STORE = 'running.retrospective.v1', UNIT = 'running.retrospective.units';
   const NS = 'http://www.w3.org/2000/svg';
-  let data, publicData, analysis, pending, legacy, year, units = 'mi', rhythm = 'all', selectedDate = null, shown = 20, origin = 'site', persistent = true, clockWidth = 650;
+  let data, publicData, analysis, pending, legacy, year, units = 'mi', rhythm = 'all', selectedDate = null, origin = 'site', persistent = true, clockWidth = 650;
   const localToday = () => { const now = new Date(); return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`; };
   let today = localToday();
   const dist = meters => meters / (units === 'mi' ? 1609.344 : 1000);
   const num = (n, decimals = 0) => n.toLocaleString('en-US', { maximumFractionDigits: decimals, minimumFractionDigits: decimals });
   const clock = bin => `${String(Math.floor(bin / 4)).padStart(2, '0')}:${String(bin % 4 * 15).padStart(2, '0')}`;
-  const duration = seconds => { const minutes = Math.round(seconds / 60); return minutes >= 60 ? `${Math.floor(minutes / 60)}h ${minutes % 60}m` : `${minutes}m`; };
   const pace = seconds => { const rounded = Math.round(seconds); return `${Math.floor(rounded / 60)}:${String(rounded % 60).padStart(2, '0')}`; };
   const dayLabel = key => new Date(key + 'T12:00:00Z').toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
   const el = (tag, text, className) => { const node = document.createElement(tag); if (text != null) node.textContent = text; if (className) node.className = className; return node; };
@@ -41,10 +40,10 @@
   function niceMax(value) { const power = Math.pow(10, Math.floor(Math.log10(value || 1))); return Math.ceil(value / power / .5) * power * .5 || 1; }
   function renderStats() {
     const rows = [
-      ['DISTANCE COVERED', num(dist(analysis.totalDistance)), units, `${num(analysis.activities.length)} recorded runs`],
-      ['TIME ON FOOT', num(analysis.totalSeconds / 3600, 1), 'hrs', 'of recorded moving time'],
-      ['DAYS WITH A RUN', num(analysis.runDays), '', `${analysis.doubles} days with doubles or more`],
-      ['THE LONGEST WAY HOME', analysis.longest ? num(dist(analysis.longest), 1) : '—', analysis.longest ? units : '', 'longest individual run']
+      ['TOTAL DISTANCE', num(dist(analysis.totalDistance)), units, `${num(analysis.activities.length)} recorded runs`],
+      ['MOVING TIME', num(analysis.totalSeconds / 3600, 1), 'h', 'recorded moving duration'],
+      ['DAYS WITH A RUN', num(analysis.runDays), '', `${analysis.doubles} days with multiple runs`],
+      ['LONGEST RUN', analysis.longest ? num(dist(analysis.longest), 1) : '—', analysis.longest ? units : '', 'maximum activity distance']
     ];
     $('stats').replaceChildren(...rows.map(([label, value, unit, note]) => {
       const node = el('div', null, 'rn-stat'), strong = el('strong', value);
@@ -80,7 +79,7 @@
     $('clock-value').textContent = value == null ? '—' : `${num(value, 1)}%`;
     $('clock-note').textContent = group.days ? `Across ${num(group.days)} covered ${rhythm === 'all' ? 'dates' : rhythm}.` : 'Import complete date coverage to estimate probability.';
     const peak = Math.max(0, ...group.bins), peakBin = group.bins.indexOf(peak);
-    $('clock-peak').textContent = group.days && peak > 0 ? `Most likely at ${clock(peakBin)}–${clock(peakBin + 1)} · ${num(peak, 1)}%` : group.days ? 'No estimated running intervals on these dates.' : 'Missing days stay unknown.';
+    $('clock-peak').textContent = group.days && peak > 0 ? `Peak: ${clock(peakBin)}–${clock(peakBin + 1)} · ${num(peak, 1)}%` : group.days ? 'No estimated running intervals on these dates.' : 'No complete date coverage.';
     $('probability-method').textContent = `Each 15-minute bin averages estimated running time over fully covered dates, including rest days. Start + moving duration approximates the interval; exact pauses are unknown. ${analysis.coveredDays ? 'Today and incomplete dates are excluded.' : 'No fully covered past dates are available in this year.'}`;
     if ($('clock-marker')) {
       const ceiling = max || Math.max(5, Math.ceil(Math.max(0, ...group.bins) / 5) * 5);
@@ -110,9 +109,9 @@
       // One calendar tab stop; arrows navigate dates, Home/End navigate the year.
       node.tabIndex = day.date === (selectedDate || analysis.activities.at(-1)?.startLocal.slice(0, 10) || analysis.days[0].date) ? 0 : -1;
       node.addEventListener('click', () => {
-        selectedDate = day.date; shown = 20;
+        selectedDate = day.date;
         container.querySelectorAll('button').forEach(button => { button.setAttribute('aria-pressed', String(button === node)); button.tabIndex = button === node ? 0 : -1; });
-        $('day-reading').textContent = description; renderLog();
+        $('day-reading').textContent = description;
       });
       node.addEventListener('keydown', event => {
         const offsets = { ArrowRight: 7, ArrowLeft: -7, ArrowDown: 1, ArrowUp: -1, Home: -i, End: analysis.days.length - 1 - i };
@@ -126,7 +125,7 @@
     }
     $('heat-max').textContent = `${num(dist(max), 0)} ${units}`;
     $('calendar-summary').textContent = `${analysis.coveredDays} / ${analysis.days.length} dates fully covered`;
-    $('day-reading').textContent = selectedDate ? container.querySelector(`[data-date="${selectedDate}"]`).title : 'Select a square to find that day’s runs. Underlined squares have partial coverage.';
+    $('day-reading').textContent = selectedDate ? container.querySelector(`[data-date="${selectedDate}"]`).title : 'Select a date to view its total distance.';
   }
   function renderWeekly() {
     const width = 900, height = 125, max = niceMax(Math.max(1, ...analysis.weeks.map(week => dist(week.distance))));
@@ -170,17 +169,8 @@
     svg.append(svgNode('text', { x: 48, y: 11 }, `moving pace / ${units} · faster ↑`), svgNode('text', { x: 424, y: 234, 'text-anchor': 'end' }, `distance (${units})`));
     rows.forEach((row, i) => {
       const dot = svgNode('circle', { cx: x(row.distanceMeters), cy: y(paces[i]), r: 3, class: 'rn-scatter-dot' });
-      dot.append(svgNode('title', {}, `${row.startLocal.slice(0, 10)} · ${row.name}: ${num(dist(row.distanceMeters), 1)} ${units}, ${pace(paces[i])}/${units}`)); svg.append(dot);
+      dot.append(svgNode('title', {}, `${row.startLocal.slice(0, 10)}: ${num(dist(row.distanceMeters), 1)} ${units}, ${pace(paces[i])}/${units}`)); svg.append(dot);
     });
-  }
-  function renderLog() {
-    const rows = analysis.activities.filter(row => !selectedDate || row.startLocal.startsWith(selectedDate)).slice().reverse();
-    $('log').replaceChildren(...rows.slice(0, shown).map(row => {
-      const tr = el('tr'), title = el('td'); title.append(el('span', row.startLocal.replace('T', ' · ').slice(0, 20)), document.createTextNode(row.name));
-      tr.append(title, el('td', `${num(dist(row.distanceMeters), 1)} ${units}`), el('td', duration(row.movingSeconds)), el('td', `${pace(row.movingSeconds / dist(row.distanceMeters))}/${units}`), el('td', row.elevationMeters == null ? '—' : `${num(row.elevationMeters)} m`)); return tr;
-    }));
-    $('log-note').textContent = rows.length ? `Showing ${Math.min(shown, rows.length)} of ${num(rows.length)} runs${selectedDate ? ' on ' + dayLabel(selectedDate) : ' in ' + year}.` : selectedDate && analysis.byDate.get(selectedDate).covered ? 'No recorded runs on this fully covered date.' : 'No runs available for this selection. Missing coverage does not establish a rest day.';
-    $('more').hidden = rows.length <= shown; $('clear-day').hidden = !selectedDate;
   }
   function render() {
     if (!data) return;
@@ -189,13 +179,15 @@
     $('source').replaceChildren();
     if (data.demo) $('source').append(el('strong', 'EXAMPLE DATA'), document.createTextNode(' · Synthetic activities, not Matthew’s history. '));
     else $('source').append(el('strong', origin === 'browser' ? 'LOCAL IMPORT' : 'ACTIVITY HISTORY'), document.createTextNode(' · '));
-    $('source').append(document.createTextNode(`${year} · ${num(analysis.activities.length)} runs · ${analysis.coveredDays} fully covered dates.${origin === 'browser' ? persistent ? ' Saved in this browser.' : ' Storage unavailable; export to keep a copy.' : ''}`));
+    const dates = [...new Set([...Object.keys(data.coverage), ...analysis.activities.map(row => row.startLocal.slice(0, 10))])].filter(key => key.startsWith(year) && key <= today).sort();
+    const range = dates.length ? ` · ${dayLabel(dates[0])}–${dayLabel(dates.at(-1))}` : '';
+    $('source').append(document.createTextNode(`${year}${range} · ${num(analysis.activities.length)} runs · ${analysis.coveredDays} fully covered dates.${origin === 'browser' ? persistent ? ' Saved in this browser.' : ' Storage unavailable; export to keep a copy.' : ''}`));
     $('demo-note').hidden = !data.demo;
     $('export').disabled = false;
-    renderStats(); renderClock(); renderCalendar(); renderWeekly(); renderWeekdays(); renderScatter(); renderLog();
+    renderStats(); renderClock(); renderCalendar(); renderWeekly(); renderWeekdays(); renderScatter();
   }
   function useData(next, source) {
-    data = next; origin = source; selectedDate = null; shown = 20;
+    data = next; origin = source; selectedDate = null;
     const available = C.years(data); if (!available.length) available.push(today.slice(0, 4));
     if (!available.includes(year)) year = available[0];
     $('year').replaceChildren(...available.map(value => { const option = el('option', value); option.value = value; return option; }));
@@ -213,14 +205,12 @@
     const link = el('a'); link.href = url; link.download = filename; document.body.append(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
   $('open-data').addEventListener('click', () => $('data-dialog').showModal());
-  $('year').addEventListener('change', () => { year = $('year').value; selectedDate = null; shown = 20; render(); });
+  $('year').addEventListener('change', () => { year = $('year').value; selectedDate = null; render(); });
   for (const unit of ['mi', 'km']) $(unit).addEventListener('click', () => { units = unit; try { localStorage.setItem(UNIT, unit); } catch { /* Preference can remain in memory. */ } render(); });
   document.querySelectorAll('[data-rhythm]').forEach(button => button.addEventListener('click', () => {
     rhythm = button.dataset.rhythm; document.querySelectorAll('[data-rhythm]').forEach(node => node.setAttribute('aria-pressed', String(node === button))); if (analysis) renderClock();
   }));
   $('time').addEventListener('input', () => { if (analysis) updateClockReading(); });
-  $('more').addEventListener('click', () => { shown += 20; renderLog(); });
-  $('clear-day').addEventListener('click', () => { selectedDate = null; shown = 20; renderCalendar(); renderLog(); });
   $('export').addEventListener('click', () => { if (data) download(data, 'running-history.json'); });
   let previewRequest = 0;
   $('file').addEventListener('change', () => { previewRequest++; pending = null; $('import-preview').hidden = true; $('import-error').textContent = ''; });
@@ -243,7 +233,7 @@
   $('restore').addEventListener('click', () => {
     if (!publicData) { $('import-error').textContent = 'The site snapshot is unavailable. Reload the page to try again.'; return; }
     previewRequest++;
-    // Preserve an imported history before returning to the public example.
+    // Preserve an imported history before returning to the site's snapshot.
     if (origin === 'browser') download(data, 'running-history-backup.json');
     try { localStorage.removeItem(STORE); } catch { $('import-error').textContent = 'Could not clear saved history. Browser storage is unavailable.'; return; }
     pending = null; $('import-preview').hidden = true; useData(publicData, 'site'); $('data-dialog').close();
@@ -264,7 +254,7 @@
     try {
       units = localStorage.getItem(UNIT) === 'km' ? 'km' : 'mi';
       const raw = localStorage.getItem(STORE); if (raw) saved = C.parse(raw);
-    } catch { $('error').hidden = false; $('error').textContent = 'Saved activity history could not be loaded. You can import a backup from About the data.'; }
+    } catch { $('error').hidden = false; $('error').textContent = 'Saved activity history could not be loaded. You can import a backup from Data and import.'; }
     try {
       const old = localStorage.getItem('milepost.v1');
       if (old) { const parsed = JSON.parse(old); if (parsed.activityHistory?.activities?.length) legacy = C.normalize(parsed.activityHistory); }
@@ -276,7 +266,7 @@
       if (!response.ok) throw new Error('The site activity snapshot could not be loaded.');
       publicData = C.parse(await response.text()); if (!saved) useData(publicData, 'site');
     } catch {
-      if (!saved) { $('source').textContent = 'Activity history unavailable.'; $('error').hidden = false; $('error').textContent = 'Could not load the site snapshot. Reload to try again, or import a history from About the data.'; }
+      if (!saved) { $('source').textContent = 'Activity history unavailable.'; $('error').hidden = false; $('error').textContent = 'Could not load the site snapshot. Reload to try again, or import a history from Data and import.'; }
     }
   }
   init();

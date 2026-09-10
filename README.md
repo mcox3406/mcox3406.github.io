@@ -14,7 +14,7 @@ Personal academic site, built with Jekyll and deployed to GitHub Pages by the wo
 | Blog posts | `_posts/YYYY-MM-DD-slug.md`, with figures, data and notebooks in `assets/posts/<slug>/` |
 | Styles | `assets/css/main.css` |
 | Fun projects | `fun/index.html`; add another project card here |
-| Running retrospective | `fun/running/index.html`, `assets/css/running.css`, `assets/js/running*.js`, `assets/data/running.json` |
+| Running statistics | `fun/running/index.html`, `assets/css/running.css`, `assets/js/running*.js`, `assets/data/running.json` |
 | Sidebar mark (unit cell) | `_includes/mark.svg`, favicon in `assets/favicon.svg` |
 | Homepage molecular landscape | `_includes/molecular-landscape.svg`; placement and opacity in the home section of `assets/css/main.css` |
 
@@ -54,9 +54,9 @@ Server-side KaTeX needs a JavaScript runtime (Node) on the machine that builds t
 
 `assets/js/molecules.js` draws random carbon skeletons and is not loaded by any layout; it is kept in case a molecule graphic is wanted later.
 
-## Running retrospective
+## Running statistics
 
-`/fun/running/` is a static activity notebook: estimated time-of-day running probability, a daily distance calendar, weekly mileage, mean distance by weekday, distance versus moving pace, and a run list. It shares the site's type, colors, and light/dark themes. There are no training plans, AI requests, account connections, or background activity syncs. The only data request is for the site's static JSON snapshot.
+`/fun/running/` displays aggregate running statistics: estimated time-of-day running probability, a daily distance calendar, weekly mileage, mean distance by weekday, and distance versus moving pace. Labels and descriptions are factual; there is no individual activity table. Editable page copy is in `fun/running/index.html`, with summary labels in `renderStats` in `assets/js/running.js`. It shares the site's type, colors, and light/dark themes. There are no training plans, AI requests, account connections, or background activity syncs. The only data request is for the site's static JSON snapshot.
 
 ### Preserved planner and Strava work
 
@@ -64,12 +64,19 @@ The previous planner, manual MCP workflow, personal Cloudflare service, and unco
 
 ### Activity history and future updates
 
-`assets/data/running.json` contains Matthew's 2025 running history, supplied as a Claude/Strava MCP export: **358 activities, 4,648,329.74 meters (2,888.3 miles), and 1,189,061 moving seconds (330.3 hours)**. The export declares all 365 local dates complete. Structural validation and independent totals pass; completeness is retained as the exporter's assertion. Activity fields are preserved exactly, with records sorted by local start time and range completeness normalized to date-by-date coverage. The original download remains unchanged.
+`assets/data/running.json` combines Matthew's supplied running exports for 2025 and 2026: **601 activities and 617 covered local dates**. The page opens to the latest year; the year selector also includes 2025.
+
+| Export range | Activities | Distance | Moving time | Complete dates |
+| --- | ---: | ---: | ---: | ---: |
+| 2025-01-01–2025-12-31 | 358 | 4,648,329.74 m (2,888.3 mi) | 1,189,061 s (330.3 h) | 365 |
+| 2026-01-01–2026-09-09 | 243 | 3,771,837.65 m (2,343.7 mi) | 959,010 s (266.4 h) | 252 |
+
+The exports declare their respective date ranges complete. Validation confirms no duplicate IDs or overlapping coverage across the two exports. Activity fields are preserved exactly, with records sorted by local start and completeness normalized to date-by-date coverage. The original downloads remain unchanged. Completeness is retained as the exporter's assertion; dates after September 9, 2026 have no export coverage and are excluded from probability and weekday-average denominators.
 
 Synthetic data remains available only through `RunningCore.demo()` for tests, and the downloadable JSON template is explicitly marked as a demo. Future exports can replace the public snapshot using this workflow:
 
-1. Obtain an activity export locally or through a connected MCP chat. **About the data** includes an export request and JSON/CSV templates. The connected chat retrieves records; the website does not authenticate with a provider.
-2. Preview the snapshot using **About the data → Preview import → Use this history**. Check units, local dates, coverage, and totals against the original source.
+1. Obtain an activity export locally or through a connected MCP chat. **Data and import** includes an export request and JSON/CSV templates. The connected chat retrieves records; the website does not authenticate with a provider.
+2. Preview the snapshot using **Data and import → Preview import → Use this history**. Check units, local dates, coverage, and totals against the original source.
 3. Export the validated snapshot. To make it the public history, replace `assets/data/running.json` with that reviewed file and commit it. Imported files otherwise stay in the visitor's browser. The page retains only activity IDs, names, local start times, sport, distance, moving duration, optional elapsed duration and elevation gain, plus athlete ID, coverage, and the demo flag. Review names and times before publishing; routes and credentials are not part of the normalized format.
 
 JSON contract (also in `assets/data/running-template.json`):
@@ -97,9 +104,9 @@ Old `strava-activities` snapshots, exported activity histories, and planner back
 
 - Time-of-day probability: local start plus moving duration approximates a continuous running interval. Split at midnight, merge overlapping intervals on each date, then divide occupied minutes in each 15-minute clock bin by `15 × fully covered dates`. The denominator includes covered dates with no runs. Weekday/weekend controls filter both numerator and denominator. Pauses cannot be located, so this is a descriptive approximation, not exact moving-time telemetry or a forecast. Today and future/incomplete dates are excluded.
 - Daily/weekly totals and scatter points include imported runs in the selected year through today, even with incomplete coverage. A run's entire distance is assigned to its local start date. Weeks start Monday. Partial weeks and incomplete coverage use faded bars; calendar underlines flag recorded distances with incomplete coverage.
-- Weekday distance is mean recorded distance across fully covered past occurrences of that weekday, including zeros. Uncovered dates are excluded. Moving pace is moving seconds divided by distance in the selected units. Missing elevation is displayed as missing.
+- Weekday distance is mean recorded distance across fully covered past occurrences of that weekday, including zeros. Uncovered dates are excluded. Moving pace is moving seconds divided by distance in the selected units. Optional elevation remains in the activity snapshot when available.
 - All calendar arithmetic uses UTC only as a container for local wall-clock values, so results do not change with the viewer's timezone. Year boundaries, leap days, doubles, and overlapping intervals are covered by the model tests. A clock refresh updates today's cutoff on focus, visibility, and once per minute.
 
-The UI uses local SVG and DOM elements, with no chart dependencies. The time slider works with keyboard arrows; the daily calendar has one tab stop, arrow navigation, Home/End, and Enter/Space selection. Plot descriptions, point titles, captions, and the run table provide alternate context.
+The UI uses local SVG and DOM elements, with no chart dependencies. The time slider works with keyboard arrows; the daily calendar has one tab stop, arrow navigation, Home/End, and Enter/Space selection. Calendar selection displays the daily total. Plot descriptions, point titles, and captions provide alternate context.
 
 Run `node --test tests/running*.test.js` and `bundle exec jekyll build` before publishing.

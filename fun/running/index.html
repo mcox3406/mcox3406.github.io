@@ -1,7 +1,7 @@
 ---
 layout: default
-title: Running, in retrospect
-description: A small field study of running habits, mileage, and the hours spent outside.
+title: Running
+description: Historical running distance, duration, pace, and time-of-day distributions.
 section: fun
 permalink: /fun/running/
 wide: true
@@ -10,37 +10,149 @@ stylesheets: [/assets/css/running.css]
 scripts: [/assets/js/running-core.js, /assets/js/running.js]
 ---
 <div class="running" id="running" data-source="{{ '/assets/data/running.json' | relative_url }}">
-  <nav class="rn-breadcrumb" aria-label="Breadcrumb"><a href="{{ '/fun/' | relative_url }}">Fun</a><span aria-hidden="true">/</span><span>Running</span></nav>
+  <nav class="rn-breadcrumb" aria-label="Breadcrumb">
+    <a href="{{ '/fun/' | relative_url }}">Fun</a><span aria-hidden="true">/</span><span>Running</span>
+  </nav>
   <header class="rn-header">
-    <p class="rn-eyebrow">A PERSONAL FIELD STUDY <span aria-hidden="true">↗</span></p>
-    <h1>Running, <em>in retrospect.</em></h1>
-    <p>A few thousand miles, a few familiar loops.<br>Looking for the patterns in the time spent running.</p>
+    <h1>Running</h1>
+    <p>Distance, duration, pace, and time-of-day distributions from recorded activities.</p>
   </header>
-  <noscript><p class="rn-notice">Enable JavaScript to explore the interactive activity plots.</p></noscript>
+  <noscript><p class="rn-notice">Enable JavaScript to view the activity plots.</p></noscript>
   <div class="rn-toolbar">
-    <div class="rn-controls"><label for="rn-year">Year</label><select id="rn-year" disabled><option>Loading…</option></select><div class="rn-segment" role="group" aria-label="Distance units"><button id="rn-mi" aria-pressed="true">mi</button><button id="rn-km" aria-pressed="false">km</button></div></div>
-    <button class="rn-text-button" id="rn-open-data">About the data <span aria-hidden="true">↗</span></button>
+    <div class="rn-controls">
+      <label for="rn-year">Year</label>
+      <select id="rn-year" disabled><option>Loading…</option></select>
+      <div class="rn-segment" role="group" aria-label="Distance units">
+        <button id="rn-mi" aria-pressed="true">mi</button>
+        <button id="rn-km" aria-pressed="false">km</button>
+      </div>
+    </div>
+    <button class="rn-text-button" id="rn-open-data">Data and import</button>
   </div>
   <p class="rn-source" id="rn-source" role="status">Loading activity history…</p>
   <p class="rn-notice" id="rn-error" role="alert" hidden></p>
-  <div class="rn-stats" id="rn-stats" aria-label="Selected year in numbers"></div>
+  <div class="rn-stats" id="rn-stats" aria-label="Annual running statistics"></div>
+
   <section class="rn-figure rn-clock" aria-labelledby="rn-clock-title">
-    <div class="rn-figure-heading"><div><span class="rn-index">01 / THE DAILY RHYTHM</span><h2 id="rn-clock-title">Am I probably running?</h2><p>Pick a time. What are the chances of catching me mid-run?</p></div><div class="rn-segment" role="group" aria-label="Days included in time-of-day probability"><button data-rhythm="all" aria-pressed="true">Every day</button><button data-rhythm="weekdays" aria-pressed="false">Weekdays</button><button data-rhythm="weekends" aria-pressed="false">Weekends</button></div></div>
-    <div class="rn-clock-layout"><div><div id="rn-clock-plot" class="rn-plot"></div><label class="rn-sr-only" for="rn-time">Time of day in 15-minute intervals</label><input id="rn-time" class="rn-time" type="range" min="0" max="95" value="28" step="1"><div class="rn-slider-caption"><span>← Explore the hours →</span><span>local time</span></div></div><div class="rn-clock-reading" aria-live="polite" aria-atomic="true"><span class="rn-eyebrow" id="rn-clock-time">07:00–07:15</span><strong id="rn-clock-value">—</strong><p id="rn-clock-note">Estimated running probability</p><span class="rn-clock-peak" id="rn-clock-peak"></span></div></div>
+    <div class="rn-figure-heading">
+      <div>
+        <h2 id="rn-clock-title">Running probability by time of day</h2>
+        <p>Estimated fraction of time spent running in each 15-minute interval.</p>
+      </div>
+      <div class="rn-segment" role="group" aria-label="Days included in time-of-day probability">
+        <button data-rhythm="all" aria-pressed="true">All days</button>
+        <button data-rhythm="weekdays" aria-pressed="false">Weekdays</button>
+        <button data-rhythm="weekends" aria-pressed="false">Weekends</button>
+      </div>
+    </div>
+    <div class="rn-clock-layout">
+      <div>
+        <div id="rn-clock-plot" class="rn-plot"></div>
+        <label class="rn-sr-only" for="rn-time">Time of day in 15-minute intervals</label>
+        <input id="rn-time" class="rn-time" type="range" min="0" max="95" value="28" step="1">
+        <div class="rn-slider-caption"><span>Select time</span><span>local time</span></div>
+      </div>
+      <div class="rn-clock-reading" aria-live="polite" aria-atomic="true">
+        <span class="rn-eyebrow" id="rn-clock-time">07:00–07:15</span>
+        <strong id="rn-clock-value">—</strong>
+        <p id="rn-clock-note">Estimated running probability</p>
+        <span class="rn-clock-peak" id="rn-clock-peak"></span>
+      </div>
+    </div>
     <p class="rn-caption" id="rn-probability-method">Each 15-minute bin measures estimated running minutes divided by available minutes across fully covered dates, including days without runs.</p>
   </section>
+
   <section class="rn-figure" aria-labelledby="rn-calendar-title">
-    <div class="rn-figure-heading"><div><span class="rn-index">02 / ONE DAY AT A TIME</span><h2 id="rn-calendar-title">A year on foot.</h2><p>Long Sundays, short doubles, and the spaces in between.</p></div><span class="rn-small" id="rn-calendar-summary"></span></div>
-    <div class="rn-calendar-scroll" tabindex="0" role="region" aria-label="Daily distance calendar; scroll horizontally on small screens"><div id="rn-calendar" class="rn-calendar"></div></div>
-    <div class="rn-calendar-footer"><p id="rn-day-reading" aria-live="polite">Select a square to find that day's runs.</p><div class="rn-heat-legend"><span>0</span><i class="rn-heat-0"></i><i class="rn-heat-1"></i><i class="rn-heat-2"></i><i class="rn-heat-3"></i><i class="rn-heat-4"></i><span id="rn-heat-max"></span><i class="rn-unknown"></i><span>Unknown</span></div></div>
-    <div id="rn-weekly-plot" class="rn-plot rn-weekly"></div><p class="rn-caption">Weekly distance below the calendar sums recorded runs, Monday–Sunday. Faded bars have incomplete coverage; a blank date only means no run when its export is complete.</p>
+    <div class="rn-figure-heading">
+      <div>
+        <h2 id="rn-calendar-title">Daily and weekly distance</h2>
+        <p>Total recorded distance by local start date.</p>
+      </div>
+      <span class="rn-small" id="rn-calendar-summary"></span>
+    </div>
+    <div class="rn-calendar-scroll" tabindex="0" role="region" aria-label="Daily distance calendar; scroll horizontally on small screens">
+      <div id="rn-calendar" class="rn-calendar"></div>
+    </div>
+    <div class="rn-calendar-footer">
+      <p id="rn-day-reading" aria-live="polite">Select a date to view its total distance.</p>
+      <div class="rn-heat-legend">
+        <span>0</span><i class="rn-heat-0"></i><i class="rn-heat-1"></i><i class="rn-heat-2"></i><i class="rn-heat-3"></i><i class="rn-heat-4"></i>
+        <span id="rn-heat-max"></span><i class="rn-unknown"></i><span>Unknown</span>
+      </div>
+    </div>
+    <div id="rn-weekly-plot" class="rn-plot rn-weekly"></div>
+    <p class="rn-caption">Weekly totals use Monday–Sunday. Faded bars indicate partial weeks or incomplete coverage. Underlined calendar cells contain runs with incomplete coverage.</p>
   </section>
+
   <div class="rn-pair">
-    <section class="rn-figure" aria-labelledby="rn-weekday-title"><div class="rn-figure-heading"><div><span class="rn-index">03 / CREATURE OF HABIT</span><h2 id="rn-weekday-title">The shape of a week.</h2><p>Average distance by day of the week.</p></div></div><div id="rn-weekday-plot" class="rn-plot"></div><p class="rn-caption" id="rn-weekday-note">Includes zero-distance days with complete export coverage.</p></section>
-    <section class="rn-figure" aria-labelledby="rn-scatter-title"><div class="rn-figure-heading"><div><span class="rn-index">04 / EVERY RUN, A DOT</span><h2 id="rn-scatter-title">Farther. Faster. Sometimes both.</h2><p>Distance and average moving pace, one run at a time.</p></div></div><div id="rn-scatter-plot" class="rn-plot"></div><p class="rn-caption">Pace uses moving time. Hills, pauses, and workout structure make each dot a different story.</p></section>
+    <section class="rn-figure" aria-labelledby="rn-weekday-title">
+      <div class="rn-figure-heading">
+        <div>
+          <h2 id="rn-weekday-title">Mean distance by weekday</h2>
+          <p>Average daily distance across fully covered dates.</p>
+        </div>
+      </div>
+      <div id="rn-weekday-plot" class="rn-plot"></div>
+      <p class="rn-caption" id="rn-weekday-note">Includes zero-distance days with complete export coverage.</p>
+    </section>
+    <section class="rn-figure" aria-labelledby="rn-scatter-title">
+      <div class="rn-figure-heading">
+        <div>
+          <h2 id="rn-scatter-title">Distance and moving pace</h2>
+          <p>Distribution of recorded activity distances and paces.</p>
+        </div>
+      </div>
+      <div id="rn-scatter-plot" class="rn-plot"></div>
+      <p class="rn-caption">Each point represents one activity. Pace is moving duration divided by distance.</p>
+    </section>
   </div>
-  <section class="rn-figure rn-log" aria-labelledby="rn-log-title"><div class="rn-figure-heading"><div><span class="rn-index">05 / THE FIELD NOTES</span><h2 id="rn-log-title">The runs behind the plots.</h2></div><button class="rn-text-button" id="rn-clear-day" hidden>Show the whole year</button></div><div class="rn-table-scroll" tabindex="0" role="region" aria-label="Activity history"><table><thead><tr><th scope="col">Local date / run</th><th scope="col">Distance</th><th scope="col">Moving time</th><th scope="col">Pace</th><th scope="col">Elevation</th></tr></thead><tbody id="rn-log"></tbody></table></div><p class="rn-small" id="rn-log-note"></p><button class="rn-text-button" id="rn-more" hidden>Show 20 more runs ↓</button></section>
-  <details class="rn-methods"><summary>A note on the numbers</summary><p>These are descriptive views of recorded running activities. Dates and clock times stay local to each activity, including when traveling. Each activity keeps its own ID, so doubles remain separate.</p><p>The clock estimates a continuous running interval from each local start plus its moving duration. Exact pause timing is unavailable. Intervals crossing midnight are split, and overlapping intervals count once. The plotted probability is the fraction of minutes spent in these estimated intervals within a 15-minute clock window, averaged over fully covered dates. It describes this history; it is not a forecast. Today, future dates, and dates with unknown coverage are excluded from probability and weekday averages.</p><p>Total distance and the run list include all imported runs in the selected year through today. Coverage is the exporter's claim that all running activities for a date were retrieved; the page cannot independently verify it. Unknown dates do not establish rest days. The calendar and weekly bars distinguish incomplete coverage.</p><p>Imports stay in this browser. Export a backup to retain them. To share your history on the public site, replace the site's activity snapshot in the repository with a reviewed export.</p></details>
-  <footer class="rn-footer"><span>One runner. Many repeated experiments.</span><button class="rn-text-button" id="rn-export" disabled>Export snapshot ↓</button></footer>
-  <dialog id="rn-data-dialog" class="rn-dialog" aria-labelledby="rn-data-title"><form method="dialog" class="rn-dialog-close"><button aria-label="Close data dialog">×</button></form><span class="rn-index">THE SOURCE MATERIAL</span><h2 id="rn-data-title">A history, in a file.</h2><p>Explore a running activity export here. The plots update after you preview and import it; your file stays in this browser.</p><div id="rn-demo-note" class="rn-notice" hidden>This snapshot contains synthetic example data, not Matthew's activity history.</div><form id="rn-import-form"><label for="rn-file">Activity snapshot (.json or .csv)</label><input id="rn-file" type="file" accept=".json,.csv,application/json,text/csv" required><button class="rn-button" type="submit">Preview import</button></form><p class="rn-import-error" id="rn-import-error" role="alert"></p><div id="rn-import-preview" class="rn-import-preview" hidden><p id="rn-preview-description"></p><p class="rn-small">Importing replaces the history shown in this browser. Export your current snapshot first if you want to keep it.</p><button class="rn-button" id="rn-confirm-import">Use this history</button></div><div class="rn-data-actions"><button class="rn-text-button" id="rn-restore">Use the site's snapshot</button><button class="rn-text-button" id="rn-legacy" hidden>Recover previous imported activities</button></div><details class="rn-methods"><summary>Getting data from an MCP connection</summary><p>In a chat with access to your activity history, use this export request. Then import the returned file above. All retrieval happens in your connected chat.</p><textarea id="rn-mcp-prompt" rows="8" readonly aria-label="Activity export request"></textarea><button class="rn-text-button" id="rn-copy-prompt">Copy export request</button><p class="rn-small" id="rn-copy-status" role="status"></p></details><details class="rn-methods"><summary>JSON and CSV formats</summary><p>JSON snapshots include local date coverage, so they can support the probability plot. Replace the template’s example records and remove its demo flag when using verified history. Existing activity snapshots and planner backups with activity history are supported.</p><p>CSV files use the template's explicit meter and second columns. They have no coverage declaration, so the clock and weekday averages stay unavailable. Convert native exports to this format before importing; a missing timezone or ambiguous unit should be resolved at the source.</p><div class="rn-data-actions"><a href="{{ '/assets/data/running-template.json' | relative_url }}" download>JSON template ↓</a><a href="{{ '/assets/data/running-template.csv' | relative_url }}" download>CSV template ↓</a></div></details></dialog>
+
+  <details class="rn-methods">
+    <summary>Methods and data coverage</summary>
+    <p>Dates and clock times remain local to each activity. Separate activities retain their original IDs, including multiple runs on one day.</p>
+    <p>Running intervals are estimated from local start time plus moving duration. Exact pause timing is unavailable. Intervals crossing midnight are split, and overlapping intervals count once. Probability is occupied time within each 15-minute interval divided by available time across fully covered dates, including dates without runs. Today and dates with incomplete coverage are excluded from probability and weekday averages.</p>
+    <p>Total distance includes all imported runs in the selected year through today. Complete coverage means the exporter reports retrieving every running activity for that date; the page cannot independently verify this claim. Dates without coverage are unknown. Weekly bars distinguish partial weeks and incomplete coverage.</p>
+    <p>Imported files are stored in this browser. Export a snapshot to retain a copy. Updating the site's default history requires replacing the activity snapshot in the repository.</p>
+  </details>
+  <footer class="rn-footer">
+    <button class="rn-text-button" id="rn-export" disabled>Export snapshot</button>
+  </footer>
+
+  <dialog id="rn-data-dialog" class="rn-dialog" aria-labelledby="rn-data-title">
+    <form method="dialog" class="rn-dialog-close"><button aria-label="Close data dialog">×</button></form>
+    <h2 id="rn-data-title">Activity data</h2>
+    <p>Import a running activity export to update the plots. Imported files stay in this browser.</p>
+    <div id="rn-demo-note" class="rn-notice" hidden>This snapshot contains synthetic example data, not Matthew's activity history.</div>
+    <form id="rn-import-form">
+      <label for="rn-file">Activity snapshot (.json or .csv)</label>
+      <input id="rn-file" type="file" accept=".json,.csv,application/json,text/csv" required>
+      <button class="rn-button" type="submit">Preview import</button>
+    </form>
+    <p class="rn-import-error" id="rn-import-error" role="alert"></p>
+    <div id="rn-import-preview" class="rn-import-preview" hidden>
+      <p id="rn-preview-description"></p>
+      <p class="rn-small">Importing replaces the history shown in this browser. Export your current snapshot first if you want to keep it.</p>
+      <button class="rn-button" id="rn-confirm-import">Use this history</button>
+    </div>
+    <div class="rn-data-actions">
+      <button class="rn-text-button" id="rn-restore">Use the site's snapshot</button>
+      <button class="rn-text-button" id="rn-legacy" hidden>Recover previous imported activities</button>
+    </div>
+    <details class="rn-methods">
+      <summary>Exporting data from an MCP connection</summary>
+      <p>Use this request in a chat with access to your activity history, then import the returned file. Retrieval happens in the connected chat.</p>
+      <textarea id="rn-mcp-prompt" rows="8" readonly aria-label="Activity export request"></textarea>
+      <button class="rn-text-button" id="rn-copy-prompt">Copy export request</button>
+      <p class="rn-small" id="rn-copy-status" role="status"></p>
+    </details>
+    <details class="rn-methods">
+      <summary>JSON and CSV formats</summary>
+      <p>JSON snapshots include local date coverage for the probability and weekday-average plots. Replace the template's example records and remove its demo flag when using verified history. Existing activity snapshots and planner backups with activity history are supported.</p>
+      <p>CSV files use the template's meter and second columns. They have no coverage declaration, so probability and weekday averages are unavailable. Convert native exports to this format before importing, resolving units and timezones at the source.</p>
+      <div class="rn-data-actions">
+        <a href="{{ '/assets/data/running-template.json' | relative_url }}" download>JSON template</a>
+        <a href="{{ '/assets/data/running-template.csv' | relative_url }}" download>CSV template</a>
+      </div>
+    </details>
+  </dialog>
 </div>
