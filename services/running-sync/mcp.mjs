@@ -56,14 +56,15 @@ export function endpoint(value) {
   return url.href;
 }
 export async function discover(fetcher = fetch) {
-  const resource = await jsonResponse(await fetcher(METADATA, { redirect: 'error', signal: AbortSignal.timeout(15000) }));
+  // Workers support manual redirects; non-2xx responses are rejected without following them.
+  const resource = await jsonResponse(await fetcher(METADATA, { redirect: 'manual', signal: AbortSignal.timeout(15000) }));
   if (resource.resource !== RESOURCE || !resource.authorization_servers?.includes('https://www.strava.com/mcp-issuer')) throw new SyncError('Strava’s authorization discovery changed. Review the official metadata before connecting.');
-  const metadata = await jsonResponse(await fetcher(ISSUER_METADATA, { redirect: 'error', signal: AbortSignal.timeout(15000) }));
+  const metadata = await jsonResponse(await fetcher(ISSUER_METADATA, { redirect: 'manual', signal: AbortSignal.timeout(15000) }));
   for (const key of ['authorization_endpoint', 'token_endpoint', 'registration_endpoint', 'revocation_endpoint']) metadata[key] = endpoint(metadata[key]);
   return metadata;
 }
 export async function register(metadata, callback, fetcher = fetch) {
-  const client = await jsonResponse(await fetcher(endpoint(metadata.registration_endpoint), { method: 'POST', redirect: 'error', signal: AbortSignal.timeout(15000), headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ client_name: 'Personal running planner', redirect_uris: [callback], grant_types: ['authorization_code', 'refresh_token'], response_types: ['code'], token_endpoint_auth_method: 'none' }) }));
+  const client = await jsonResponse(await fetcher(endpoint(metadata.registration_endpoint), { method: 'POST', redirect: 'manual', signal: AbortSignal.timeout(15000), headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ client_name: 'Personal running planner', redirect_uris: [callback], grant_types: ['authorization_code', 'refresh_token'], response_types: ['code'], token_endpoint_auth_method: 'none' }) }));
   if (typeof client.client_id !== 'string' || !client.client_id || !['none', 'client_secret_post', 'client_secret_basic'].includes(client.token_endpoint_auth_method || 'none')) throw new SyncError('Strava did not register a supported personal OAuth client.');
   if (client.redirect_uris && !client.redirect_uris.includes(callback)) throw new SyncError('Strava did not accept this callback address.');
   if (client.token_endpoint_auth_method && client.token_endpoint_auth_method !== 'none' && typeof client.client_secret !== 'string') throw new SyncError('Strava did not return the registered client credentials.');
@@ -74,7 +75,7 @@ export async function oauthPost(url, client, fields, fetcher = fetch) {
   const headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
   if (client.token_endpoint_auth_method === 'client_secret_post') body.set('client_secret', client.client_secret);
   if (client.token_endpoint_auth_method === 'client_secret_basic') headers.Authorization = `Basic ${btoa(`${encodeURIComponent(client.client_id)}:${encodeURIComponent(client.client_secret)}`)}`;
-  return fetcher(endpoint(url), { method: 'POST', headers, body, redirect: 'error', signal: AbortSignal.timeout(15000) });
+  return fetcher(endpoint(url), { method: 'POST', headers, body, redirect: 'manual', signal: AbortSignal.timeout(15000) });
 }
 export function tokens(value) {
   if (typeof value.access_token !== 'string' || !value.access_token || typeof value.refresh_token !== 'string' || !value.refresh_token || (value.token_type && value.token_type.toLowerCase() !== 'bearer')) throw new SyncError('Strava did not issue renewable credentials. Automatic updates cannot start.');
@@ -83,12 +84,12 @@ export function tokens(value) {
   return { access_token: value.access_token, refresh_token: value.refresh_token, expires_at: expires, scope: value.scope };
 }
 export class StravaMcp {
-  constructor(accessToken, fetcher = fetch) { this.token = accessToken; this.fetcher = fetcher; this.nextId = 0; this.protocol = '2025-03-26'; }
+  constructor(accessToken, fetcher = fetch) { this.token = accessToken; this.fetcher = (...args) => fetcher(...args); this.nextId = 0; this.protocol = '2025-03-26'; }
   async send(method, params, notification = false) {
     const id = ++this.nextId;
     const headers = { Authorization: `Bearer ${this.token}`, 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream', 'MCP-Protocol-Version': this.protocol };
     if (this.session) headers['Mcp-Session-Id'] = this.session;
-    const response = await this.fetcher(RESOURCE, { method: 'POST', headers, redirect: 'error', signal: AbortSignal.timeout(20000), body: JSON.stringify({ jsonrpc: '2.0', ...(notification ? {} : { id }), method, params }) });
+    const response = await this.fetcher(RESOURCE, { method: 'POST', headers, redirect: 'manual', signal: AbortSignal.timeout(20000), body: JSON.stringify({ jsonrpc: '2.0', ...(notification ? {} : { id }), method, params }) });
     if (response.status === 401) throw new SyncError('Strava authorization expired. Reconnect to continue.', 401, 'strava_authorization_expired');
     if (response.status === 429) throw new SyncError('Strava’s request limit was reached. Try again later.', 429, 'rate_limited');
     if (!response.ok) throw new SyncError(`The official MCP connector returned HTTP ${response.status}.`);
@@ -123,7 +124,7 @@ export class StravaMcp {
   async close() {
     if (!this.session) return;
     try {
-      const response = await this.fetcher(RESOURCE, { method: 'DELETE', redirect: 'error', signal: AbortSignal.timeout(5000), headers: { Authorization: `Bearer ${this.token}`, 'Mcp-Session-Id': this.session, 'MCP-Protocol-Version': this.protocol } });
+      const response = await this.fetcher(RESOURCE, { method: 'DELETE', redirect: 'manual', signal: AbortSignal.timeout(5000), headers: { Authorization: `Bearer ${this.token}`, 'Mcp-Session-Id': this.session, 'MCP-Protocol-Version': this.protocol } });
       await response.body?.cancel();
     } catch { /* Session cleanup cannot invalidate a successfully retrieved result. */ }
   }

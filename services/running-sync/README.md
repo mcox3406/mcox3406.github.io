@@ -16,4 +16,4 @@ Run protocol and security checks from the repository root:
 node --test tests/milepost-sync.test.js
 ```
 
-Run `npm ci` and `npm run check` from this directory to verify the Worker bundle without deploying. Tests use synthetic data; they do not establish live Strava access or successful activity synchronization.
+With Node 22 or newer, run `npm ci` and `npm run test:runtime` from this directory to bundle the Worker and exercise authorization, token renewal, MCP reads, revocation, and redirect rejection in Cloudflare's workerd runtime. Every upstream response uses synthetic data. `npm run check` only verifies the bundle without deploying. These checks do not establish live Strava access or successful activity synchronization.
