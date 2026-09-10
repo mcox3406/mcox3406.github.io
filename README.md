@@ -62,9 +62,11 @@ Server-side KaTeX needs a JavaScript runtime (Node) on the machine that builds t
 
 The previous planner, manual MCP workflow, personal Cloudflare service, and uncommitted runtime fixes are preserved on GitHub at [`archive/running-planner-strava-2026-09-10`](https://github.com/mcox3406/mcox3406.github.io/tree/archive/running-planner-strava-2026-09-10), commit `4404cd8`. That branch includes the old setup documentation and tests. To revisit it, use a separate worktree or branch; it does not need to be deployed to restore development. The retrospective removes the client connection code, service source, endpoint configuration, and service CI from the active tree. It does not revoke external credentials or delete an already deployed Cloudflare Worker.
 
-### Put real history on the public page
+### Activity history and future updates
 
-`assets/data/running.json` is currently **synthetic example data for 2025**, clearly labeled in the interface. It is not Matthew's activity history. The deterministic generator is `RunningCore.demo()`; generated activities are fixtures, never inferred from the former training plan.
+`assets/data/running.json` contains Matthew's 2025 running history, supplied as a Claude/Strava MCP export: **358 activities, 4,648,329.74 meters (2,888.3 miles), and 1,189,061 moving seconds (330.3 hours)**. The export declares all 365 local dates complete. Structural validation and independent totals pass; completeness is retained as the exporter's assertion. Activity fields are preserved exactly, with records sorted by local start time and range completeness normalized to date-by-date coverage. The original download remains unchanged.
+
+Synthetic data remains available only through `RunningCore.demo()` for tests, and the downloadable JSON template is explicitly marked as a demo. Future exports can replace the public snapshot using this workflow:
 
 1. Obtain an activity export locally or through a connected MCP chat. **About the data** includes an export request and JSON/CSV templates. The connected chat retrieves records; the website does not authenticate with a provider.
 2. Preview the snapshot using **About the data → Preview import → Use this history**. Check units, local dates, coverage, and totals against the original source.
