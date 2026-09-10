@@ -3,7 +3,6 @@ description: PhD candidate in chemical engineering at MIT working on machine lea
 url: https://mcox3406.github.io
 baseurl: ""
 lang: en-US
-running_sync_url: https://personal-running-sync.mcoxcaltech.workers.dev
 
 author:
   name: Matthew Cox
@@ -63,4 +62,5 @@ exclude:
   - cv-src
   - tests
   - services
+  - scripts
   - local-notes
