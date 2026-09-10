@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "kind": "running-activities",
+  "demo": true,
+  "rangeStart": "2025-01-01",
+  "rangeEnd": "2025-01-07",
+  "complete": true,
+  "activities": [
+    {"id": "example-1", "startLocal": "2025-01-03T07:30:00", "sport": "Run", "name": "Example run — replace with a real activity", "distanceMeters": 10000, "movingSeconds": 3600}
+  ]
+}
