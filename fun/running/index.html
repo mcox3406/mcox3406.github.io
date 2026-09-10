@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Running
+last_updated: "2026-09-10"
 description: Historical running distance, duration, pace, and time-of-day distributions.
 section: fun
 permalink: /fun/running/
@@ -30,6 +31,7 @@ scripts: [/assets/js/running-core.js, /assets/js/running-plots.js, /assets/js/ru
     <button class="rn-text-button" id="rn-open-data">Data and import</button>
   </div>
   <p class="rn-source" id="rn-source" role="status">Loading activity history…</p>
+  <p class="rn-updated">Last updated <time datetime="{{ page.last_updated }}">{{ page.last_updated | date: "%B %-d, %Y" }}</time></p>
   <p class="rn-notice" id="rn-error" role="alert" hidden></p>
   <div class="rn-stats" id="rn-stats" aria-label="Annual running statistics"></div>
 

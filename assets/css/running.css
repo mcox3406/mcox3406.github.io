@@ -27,7 +27,8 @@
 .rn-segment button[aria-pressed="true"] { background: var(--rn-tint); color: var(--rn-accent); }
 .rn-text-button { padding: 3px 0; border: 0; background: none; color: var(--rn-accent); font-size: 13px !important; }
 .rn-text-button:hover { text-decoration: underline; text-underline-offset: 3px; }
-.rn-source { color: var(--ink-2); font: 11px/1.7 var(--mono); margin: 13px 0 21px; }
+.rn-source { color: var(--ink-2); font: 11px/1.7 var(--mono); margin: 13px 0 5px; }
+.rn-updated { color: var(--ink-2); font: 11px/1.7 var(--mono); margin: 0 0 21px; }
 .rn-source strong { color: var(--rn-warm); font-weight: 500; }
 .rn-stats { display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid var(--line); padding-bottom: 27px; gap: 24px; }
 .rn-stat > span { display: block; font: 10px var(--mono); letter-spacing: .05em; color: var(--ink-2); }

@@ -58,6 +58,8 @@ Server-side KaTeX needs a JavaScript runtime (Node) on the machine that builds t
 
 `/fun/running/` displays cumulative year comparisons, regional route overlays, monthly pace distributions, pace versus average heart rate, estimated time-of-day running probability, and daily/weekly distance. Labels and descriptions are factual; there is no individual activity table. Editable page copy is in `fun/running/index.html`, with summary labels in `renderStats` in `assets/js/running.js`. It shares the site's type, colors, and light/dark themes. There are no training plans, AI requests, account connections, or background activity syncs. Data requests load two local static JSON files: the activity summary and derived plot details. The route view uses SVG with no map tiles or external geographic requests. Visualization ideas are acknowledged with an “Inspired in part by No Days Off” footer link.
 
+The running page's visible update date is set by `last_updated` in `fun/running/index.html`. Update it when refreshing the page or its activity data.
+
 ### Preserved planner and Strava work
 
 The previous planner, manual MCP workflow, personal Cloudflare service, and uncommitted runtime fixes are preserved on GitHub at [`archive/running-planner-strava-2026-09-10`](https://github.com/mcox3406/mcox3406.github.io/tree/archive/running-planner-strava-2026-09-10), commit `4404cd8`. That branch includes the old setup documentation and tests. To revisit it, use a separate worktree or branch; it does not need to be deployed to restore development. The retrospective removes the client connection code, service source, endpoint configuration, and service CI from the active tree. It does not revoke external credentials or delete an already deployed Cloudflare Worker.
