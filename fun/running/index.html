@@ -7,15 +7,15 @@ permalink: /fun/running/
 wide: true
 math: false
 stylesheets: [/assets/css/running.css]
-scripts: [/assets/js/running-core.js, /assets/js/running.js]
+scripts: [/assets/js/running-core.js, /assets/js/running-plots.js, /assets/js/running.js]
 ---
-<div class="running" id="running" data-source="{{ '/assets/data/running.json' | relative_url }}">
+<div class="running" id="running" data-source="{{ '/assets/data/running.json' | relative_url }}" data-details="{{ '/assets/data/running-details.json' | relative_url }}">
   <nav class="rn-breadcrumb" aria-label="Breadcrumb">
     <a href="{{ '/fun/' | relative_url }}">Fun</a><span aria-hidden="true">/</span><span>Running</span>
   </nav>
   <header class="rn-header">
     <h1>Running</h1>
-    <p>Distance, duration, pace, and time-of-day distributions from recorded activities.</p>
+    <p>Recorded running distance, routes, pace, heart rate, and time of day.</p>
   </header>
   <noscript><p class="rn-notice">Enable JavaScript to view the activity plots.</p></noscript>
   <div class="rn-toolbar">
@@ -32,6 +32,60 @@ scripts: [/assets/js/running-core.js, /assets/js/running.js]
   <p class="rn-source" id="rn-source" role="status">Loading activity history…</p>
   <p class="rn-notice" id="rn-error" role="alert" hidden></p>
   <div class="rn-stats" id="rn-stats" aria-label="Annual running statistics"></div>
+
+  <section class="rn-figure" aria-labelledby="rn-cumulative-title">
+    <div class="rn-figure-heading">
+      <div>
+        <h2 id="rn-cumulative-title">Cumulative distance by year</h2>
+        <p>Recorded distance from January 1, aligned by calendar date.</p>
+      </div>
+    </div>
+    <div id="rn-cumulative-legend" class="rn-legend"></div>
+    <div id="rn-cumulative-plot" class="rn-plot"></div>
+    <p id="rn-comparison" class="rn-caption"></p>
+  </section>
+
+  <section class="rn-figure" aria-labelledby="rn-route-title">
+    <div class="rn-figure-heading">
+      <div>
+        <h2 id="rn-route-title">Recorded routes</h2>
+        <p>GPS tracks overlaid by region. Line intensity increases with overlapping tracks.</p>
+      </div>
+      <span id="rn-route-coverage" class="rn-small"></span>
+    </div>
+    <div class="rn-controls rn-route-controls">
+      <label for="rn-region">Region</label>
+      <select id="rn-region" disabled><option>Loading…</option></select>
+    </div>
+    <div id="rn-route-plot" class="rn-plot rn-map"></div>
+    <p id="rn-route-note" class="rn-caption">Loading route data…</p>
+  </section>
+
+  <div class="rn-pair">
+    <section class="rn-figure" aria-labelledby="rn-pace-title">
+      <div class="rn-figure-heading">
+        <div>
+          <h2 id="rn-pace-title">Monthly pace distributions</h2>
+          <p>Distribution of activity-average moving pace in each month.</p>
+        </div>
+      </div>
+      <div id="rn-pace-plot" class="rn-plot"></div>
+      <p class="rn-caption">Each run contributes one pace, regardless of distance. Curves use a shared density scale; dots mark medians and n gives the number of runs. Months with no runs have no curve.</p>
+    </section>
+    <section class="rn-figure" aria-labelledby="rn-hr-title">
+      <div class="rn-figure-heading">
+        <div>
+          <h2 id="rn-hr-title">Pace and heart rate</h2>
+          <p>Recorded average heart rate versus activity-average moving pace.</p>
+        </div>
+      </div>
+      <div id="rn-hr-plot" class="rn-plot"></div>
+      <div class="rn-legend rn-quarters" aria-label="Point colors by quarter">
+        <span class="rn-quarter-0">Jan–Mar</span><span class="rn-quarter-1">Apr–Jun</span><span class="rn-quarter-2">Jul–Sep</span><span class="rn-quarter-3">Oct–Dec</span>
+      </div>
+      <p id="rn-hr-note" class="rn-caption"></p>
+    </section>
+  </div>
 
   <section class="rn-figure rn-clock" aria-labelledby="rn-clock-title">
     <div class="rn-figure-heading">
@@ -84,45 +138,24 @@ scripts: [/assets/js/running-core.js, /assets/js/running.js]
     <p class="rn-caption">Weekly totals use Monday–Sunday. Faded bars indicate partial weeks or incomplete coverage. Underlined calendar cells contain runs with incomplete coverage.</p>
   </section>
 
-  <div class="rn-pair">
-    <section class="rn-figure" aria-labelledby="rn-weekday-title">
-      <div class="rn-figure-heading">
-        <div>
-          <h2 id="rn-weekday-title">Mean distance by weekday</h2>
-          <p>Average daily distance across fully covered dates.</p>
-        </div>
-      </div>
-      <div id="rn-weekday-plot" class="rn-plot"></div>
-      <p class="rn-caption" id="rn-weekday-note">Includes zero-distance days with complete export coverage.</p>
-    </section>
-    <section class="rn-figure" aria-labelledby="rn-scatter-title">
-      <div class="rn-figure-heading">
-        <div>
-          <h2 id="rn-scatter-title">Distance and moving pace</h2>
-          <p>Distribution of recorded activity distances and paces.</p>
-        </div>
-      </div>
-      <div id="rn-scatter-plot" class="rn-plot"></div>
-      <p class="rn-caption">Each point represents one activity. Pace is moving duration divided by distance.</p>
-    </section>
-  </div>
-
   <details class="rn-methods">
     <summary>Methods and data coverage</summary>
     <p>Dates and clock times remain local to each activity. Separate activities retain their original IDs, including multiple runs on one day.</p>
-    <p>Running intervals are estimated from local start time plus moving duration. Exact pause timing is unavailable. Intervals crossing midnight are split, and overlapping intervals count once. Probability is occupied time within each 15-minute interval divided by available time across fully covered dates, including dates without runs. Today and dates with incomplete coverage are excluded from probability and weekday averages.</p>
+    <p>Running intervals are estimated from local start time plus moving duration. Exact pause timing is unavailable. Intervals crossing midnight are split, and overlapping intervals count once. Probability is occupied time within each 15-minute interval divided by available time across fully covered dates, including dates without runs. Today and dates with incomplete coverage are excluded from probability and cumulative comparisons.</p>
     <p>Total distance includes all imported runs in the selected year through today. Complete coverage means the exporter reports retrieving every running activity for that date; the page cannot independently verify this claim. Dates without coverage are unknown. Weekly bars distinguish partial weeks and incomplete coverage.</p>
+    <p>Cumulative lines stop at the first date without complete coverage. Year comparisons use the last calendar date covered by both years. Monthly pace curves use Gaussian smoothing with a fixed bandwidth of 12 seconds per kilometer; each run has equal weight, and all months share the same density scale. These are distributions of activity averages, not within-run pace samples.</p>
+    <p>Route and heart-rate data come from a bulk export matched to the site's 2025–2026 activity summary. There are 571 usable GPX tracks and 578 recorded average heart rates among 601 runs. Thirteen GPX files have no usable track, eleven activities have no GPX file, and six FIT files have not been decoded. Missing routes and heart rates are omitted. Tracks use a local geographic projection, 20-meter simplification, and separate segments across GPS jumps over 1 km. Region labels are approximate.</p>
     <p>Imported files are stored in this browser. Export a snapshot to retain a copy. Updating the site's default history requires replacing the activity snapshot in the repository.</p>
   </details>
   <footer class="rn-footer">
     <span>Inspired in part by <a href="https://nodaysoff.run/">No Days Off</a>.</span>
-    <button class="rn-text-button" id="rn-export" disabled>Export snapshot</button>
+    <button class="rn-text-button" id="rn-export" disabled>Export activity summary</button>
   </footer>
 
   <dialog id="rn-data-dialog" class="rn-dialog" aria-labelledby="rn-data-title">
     <form method="dialog" class="rn-dialog-close"><button aria-label="Close data dialog">×</button></form>
     <h2 id="rn-data-title">Activity data</h2>
-    <p>Import a running activity export to update the plots. Imported files stay in this browser.</p>
+    <p>Import a running activity summary to update the plots. Imported files stay in this browser. Route and heart-rate figures use a separate dataset for the site's history.</p>
     <div id="rn-demo-note" class="rn-notice" hidden>This snapshot contains synthetic example data, not Matthew's activity history.</div>
     <form id="rn-import-form">
       <label for="rn-file">Activity snapshot (.json or .csv)</label>
@@ -148,8 +181,8 @@ scripts: [/assets/js/running-core.js, /assets/js/running.js]
     </details>
     <details class="rn-methods">
       <summary>JSON and CSV formats</summary>
-      <p>JSON snapshots include local date coverage for the probability and weekday-average plots. Replace the template's example records and remove its demo flag when using verified history. Existing activity snapshots and planner backups with activity history are supported.</p>
-      <p>CSV files use the template's meter and second columns. They have no coverage declaration, so probability and weekday averages are unavailable. Convert native exports to this format before importing, resolving units and timezones at the source.</p>
+      <p>JSON snapshots include local date coverage for the probability and cumulative plots. Replace the template's example records and remove its demo flag when using verified history. Existing activity snapshots and planner backups with activity history are supported.</p>
+      <p>CSV files use the template's meter and second columns. They have no coverage declaration, so probability and cumulative comparisons are unavailable. Convert native exports to this format before importing, resolving units and timezones at the source.</p>
       <div class="rn-data-actions">
         <a href="{{ '/assets/data/running-template.json' | relative_url }}" download>JSON template</a>
         <a href="{{ '/assets/data/running-template.csv' | relative_url }}" download>CSV template</a>

@@ -5,13 +5,12 @@
   const $ = id => document.getElementById('rn-' + id);
   const STORE = 'running.retrospective.v1', UNIT = 'running.retrospective.units';
   const NS = 'http://www.w3.org/2000/svg';
-  let data, publicData, analysis, pending, legacy, year, units = 'mi', rhythm = 'all', selectedDate = null, origin = 'site', persistent = true, clockWidth = 650;
+  let data, publicData, details, analysis, pending, legacy, year, units = 'mi', rhythm = 'all', selectedDate = null, origin = 'site', persistent = true, clockWidth = 650;
   const localToday = () => { const now = new Date(); return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`; };
   let today = localToday();
   const dist = meters => meters / (units === 'mi' ? 1609.344 : 1000);
   const num = (n, decimals = 0) => n.toLocaleString('en-US', { maximumFractionDigits: decimals, minimumFractionDigits: decimals });
   const clock = bin => `${String(Math.floor(bin / 4)).padStart(2, '0')}:${String(bin % 4 * 15).padStart(2, '0')}`;
-  const pace = seconds => { const rounded = Math.round(seconds); return `${Math.floor(rounded / 60)}:${String(rounded % 60).padStart(2, '0')}`; };
   const dayLabel = key => new Date(key + 'T12:00:00Z').toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
   const el = (tag, text, className) => { const node = document.createElement(tag); if (text != null) node.textContent = text; if (className) node.className = className; return node; };
   function svgNode(tag, attrs = {}, text) {
@@ -24,10 +23,6 @@
     const svg = svgNode('svg', { viewBox: `0 0 ${width} ${height}`, role: 'img', 'aria-labelledby': `${target}-title ${target}-desc` });
     svg.append(svgNode('title', { id: `${target}-title` }, title), svgNode('desc', { id: `${target}-desc` }, description));
     $(target).replaceChildren(svg); return svg;
-  }
-  function emptyPlot(target, message) {
-    const svg = figure(target, 440, 225, message, message);
-    svg.append(svgNode('text', { x: 220, y: 110, 'text-anchor': 'middle' }, message));
   }
   function grid(svg, max, width, height, left = 42, top = 22, bottom = 30, ticks = 4) {
     const y = value => height - bottom - value / max * (height - bottom - top);
@@ -138,40 +133,6 @@
       if (i % 9 === 0) svg.append(svgNode('text', { x: 42 + i * step, y: 120 }, dayLabel(week.start)));
     });
   }
-  function renderWeekdays() {
-    if (!analysis.coveredDays) { emptyPlot('weekday-plot', 'Complete date coverage needed'); $('weekday-note').textContent = 'Weekday averages need fully covered dates, including days without runs.'; return; }
-    const values = analysis.weekdays.map(day => day.days ? dist(day.distance / day.days) : 0), max = niceMax(Math.max(1, ...values));
-    const svg = figure('weekday-plot', 440, 235, `Mean distance per weekday in ${units}`, 'Includes zero-distance fully covered dates. Days with no coverage have no estimate.');
-    const y = grid(svg, max, 440, 235, 42, 23, 28);
-    svg.append(svgNode('text', { x: 42, y: 11 }, `${units} / covered day`));
-    const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    analysis.weekdays.forEach((day, i) => {
-      const x = 53 + i * 54;
-      const bar = svgNode('rect', { x, y: y(values[i]), width: 29, height: y(0) - y(values[i]), rx: 1, class: 'rn-bar' });
-      bar.append(svgNode('title', {}, `${labels[i]}: ${day.days ? num(values[i], 1) + ' ' + units + ' per day across ' + day.days + ' covered dates' : 'no covered dates'}`));
-      svg.append(bar, svgNode('text', { x: x + 14.5, y: 228, 'text-anchor': 'middle' }, labels[i]));
-      if (!day.days) svg.append(svgNode('text', { x: x + 14.5, y: y(0) - 10, 'text-anchor': 'middle' }, '—'));
-    });
-    const peak = values.indexOf(Math.max(...values));
-    $('weekday-note').textContent = `${labels[peak]} averages ${num(values[peak], 1)} ${units} across ${analysis.weekdays[peak].days} covered dates. Rest days count; unknown dates do not.`;
-  }
-  function renderScatter() {
-    if (!analysis.activities.length) { emptyPlot('scatter-plot', 'No recorded runs in this year'); return; }
-    const rows = analysis.activities, xmax = niceMax(Math.max(...rows.map(row => dist(row.distanceMeters))));
-    const paces = rows.map(row => row.movingSeconds / dist(row.distanceMeters)), min = Math.max(0, Math.floor(Math.min(...paces) / 60) * 60 - 30), max = Math.max(min + 120, Math.ceil(Math.max(...paces) / 60) * 60 + 30);
-    const svg = figure('scatter-plot', 440, 235, 'Individual run distance versus moving pace', `${rows.length} runs. Distance increases to the right. Faster paces are higher. Pace ranges from ${pace(min)} to ${pace(max)} per ${units}.`);
-    const x = meters => 48 + dist(meters) / xmax * 376, y = value => 23 + (value - min) / (max - min) * 175;
-    for (let i = 0; i <= 3; i++) {
-      const value = min + (max - min) * i / 3;
-      svg.append(svgNode('line', { x1: 48, x2: 424, y1: y(value), y2: y(value), class: 'rn-grid' }), svgNode('text', { x: 40, y: y(value) + 3, 'text-anchor': 'end' }, pace(value)));
-    }
-    for (let i = 0; i <= 4; i++) svg.append(svgNode('text', { x: 48 + i / 4 * 376, y: 218, 'text-anchor': 'middle' }, num(xmax * i / 4, Number.isInteger(xmax * i / 4) ? 0 : 1)));
-    svg.append(svgNode('text', { x: 48, y: 11 }, `moving pace / ${units} · faster ↑`), svgNode('text', { x: 424, y: 234, 'text-anchor': 'end' }, `distance (${units})`));
-    rows.forEach((row, i) => {
-      const dot = svgNode('circle', { cx: x(row.distanceMeters), cy: y(paces[i]), r: 3, class: 'rn-scatter-dot' });
-      dot.append(svgNode('title', {}, `${row.startLocal.slice(0, 10)}: ${num(dist(row.distanceMeters), 1)} ${units}, ${pace(paces[i])}/${units}`)); svg.append(dot);
-    });
-  }
   function render() {
     if (!data) return;
     analysis = C.analyze(data, year, today);
@@ -184,7 +145,8 @@
     $('source').append(document.createTextNode(`${year}${range} · ${num(analysis.activities.length)} runs · ${analysis.coveredDays} fully covered dates.${origin === 'browser' ? persistent ? ' Saved in this browser.' : ' Storage unavailable; export to keep a copy.' : ''}`));
     $('demo-note').hidden = !data.demo;
     $('export').disabled = false;
-    renderStats(); renderClock(); renderCalendar(); renderWeekly(); renderWeekdays(); renderScatter();
+    renderStats(); renderClock(); renderCalendar(); renderWeekly();
+    window.RunningPlots.render({ data, analysis, year, today, units, details: origin === 'site' ? details : null });
   }
   function useData(next, source) {
     data = next; origin = source; selectedDate = null;
@@ -197,7 +159,7 @@
   function preview(next) {
     pending = next;
     const dates = C.years(next), covered = Object.values(next.coverage).filter(Boolean).length;
-    $('preview-description').textContent = `${num(next.activities.length)} runs across ${dates.join(', ') || 'no dates'}; ${num(covered)} dates declared complete.${next.athleteId ? ' Athlete: ' + next.athleteId + '.' : ''}${next.demo ? ' This file is marked as synthetic example data.' : ''} ${!covered ? 'Probability and weekday averages will be unavailable until coverage is supplied.' : ''}`;
+    $('preview-description').textContent = `${num(next.activities.length)} runs across ${dates.join(', ') || 'no dates'}; ${num(covered)} dates declared complete.${next.athleteId ? ' Athlete: ' + next.athleteId + '.' : ''}${next.demo ? ' This file is marked as synthetic example data.' : ''} ${!covered ? 'Probability and cumulative comparisons will be unavailable until coverage is supplied.' : ''}`;
     $('import-preview').hidden = false;
   }
   function download(value, filename) {
@@ -249,7 +211,16 @@
   setInterval(refreshDate, 60000);
   let resizeTimer;
   window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => { if (analysis) renderClock(); }, 120); });
+  async function loadDetails() {
+    try {
+      const response = await fetch(app.dataset.details, { credentials: 'omit', signal: AbortSignal.timeout(15000) });
+      if (!response.ok) return;
+      details = await response.json();
+      if (data) render();
+    } catch { /* Summary plots remain available when optional plot data is missing. */ }
+  }
   async function init() {
+    const detailRequest = loadDetails();
     let saved;
     try {
       units = localStorage.getItem(UNIT) === 'km' ? 'km' : 'mi';
@@ -268,6 +239,7 @@
     } catch {
       if (!saved) { $('source').textContent = 'Activity history unavailable.'; $('error').hidden = false; $('error').textContent = 'Could not load the site snapshot. Reload to try again, or import a history from Data and import.'; }
     }
+    await detailRequest;
   }
   init();
 })();

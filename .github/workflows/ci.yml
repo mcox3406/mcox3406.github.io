@@ -16,4 +16,5 @@ jobs:
         with:
           node-version: "20"
       - run: node --test tests/running*.test.js
+      - run: python3 -m unittest discover -s tests -p 'test_running*.py'
       - run: bundle exec jekyll build

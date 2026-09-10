@@ -178,6 +178,53 @@
     }
     return normalize({ version: 1, demo: true, rangeStart: '2025-01-01', rangeEnd: '2025-12-31', complete: true, activities });
   }
-  const api = { MAX_BYTES, DAY, date, dateKey, normalize, parse, years, analyze, demo };
+  // Align calendar dates (including leap days), never day-of-year offsets.
+  const calendarIndex = key => (date('2000-' + key.slice(5, 10)) - date('2000-01-01')) / DAY;
+  function cumulative(data, today) {
+    return years(data).slice().reverse().map(year => {
+      const stats = analyze(data, year, today), points = [];
+      let distance = 0;
+      // A gap is unknown: cumulative comparisons stop at the first uncovered day.
+      for (const day of stats.days) {
+        if (!day.covered) break;
+        distance += day.distance;
+        points.push({ date: day.date, index: calendarIndex(day.date), distance });
+      }
+      return { year, points };
+    }).filter(line => line.points.length);
+  }
+  function compareCumulative(lines, year) {
+    const selected = lines.find(line => line.year === String(year));
+    const other = lines.filter(line => line.year !== String(year)).sort((a, b) => Math.abs(Number(a.year) - Number(year)) - Math.abs(Number(b.year) - Number(year)))[0];
+    if (!selected || !other) return null;
+    const common = new Set(other.points.map(point => point.index));
+    const current = selected.points.filter(point => common.has(point.index)).at(-1);
+    if (!current) return null;
+    const previous = other.points.find(point => point.index === current.index);
+    return { year: selected.year, otherYear: other.year, through: current.date.slice(5), current: current.distance, previous: previous.distance,
+      difference: current.distance - previous.distance, percent: previous.distance ? 100 * (current.distance - previous.distance) / previous.distance : null };
+  }
+  function monthlyPaces(activities) {
+    return Array.from({ length: 12 }, (_, month) => {
+      const values = activities.filter(row => Number(row.startLocal.slice(5, 7)) === month + 1)
+        .map(row => row.movingSeconds / row.distanceMeters * 1000).sort((a, b) => a - b);
+      const middle = Math.floor(values.length / 2);
+      return { month, values, median: values.length ? values.length % 2 ? values[middle] : (values[middle - 1] + values[middle]) / 2 : null };
+    });
+  }
+  function density(values, samples, bandwidth = 12) {
+    if (!(bandwidth > 0)) throw new Error('Density bandwidth must be positive.');
+    return samples.map(x => values.length ? values.reduce((sum, value) => sum + Math.exp(-.5 * ((x - value) / bandwidth) ** 2), 0) / (values.length * bandwidth * Math.sqrt(2 * Math.PI)) : 0);
+  }
+  function matchingDetails(data, details) {
+    const matched = new Map();
+    if (data.demo || details?.version !== 1 || details.kind !== 'running-plot-details') return matched;
+    for (const row of data.activities) {
+      const detail = details.activities?.[row.id];
+      if (detail && ['startLocal', 'distanceMeters', 'movingSeconds'].every(key => detail[key] === row[key])) matched.set(row.id, detail);
+    }
+    return matched;
+  }
+  const api = { MAX_BYTES, DAY, date, dateKey, normalize, parse, years, analyze, demo, calendarIndex, cumulative, compareCumulative, monthlyPaces, density, matchingDetails };
   if (typeof module === 'object' && module.exports) module.exports = api; else root.RunningCore = api;
 })(typeof window !== 'undefined' ? window : globalThis);

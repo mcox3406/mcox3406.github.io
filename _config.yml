@@ -62,4 +62,5 @@ exclude:
   - cv-src
   - tests
   - services
+  - scripts
   - local-notes
