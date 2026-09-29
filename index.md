@@ -17,4 +17,4 @@ Most of my current work is on large language models for science: post-training L
 
 ## Contact
 
-Email is best: [mcox340@mit.edu](mailto:mcox340@mit.edu). I'm also on [GitHub](https://github.com/mcox3406) and [LinkedIn](https://www.linkedin.com/in/mcox6782/), and my [CV]({{ '/assets/cv.pdf' | relative_url }}) is here.
+Email is best: [mcox340@mit.edu](mailto:mcox340@mit.edu). I'm also on [GitHub](https://github.com/mcox3406) and [LinkedIn](https://www.linkedin.com/in/mcox6782/).
