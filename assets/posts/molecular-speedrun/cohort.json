@@ -1,0 +1,45 @@
+{
+  "source_manifest_sha256": "5de9b1a047497617915cf75f8e47af34b5df7597d1d5ec17007ce9a5427c7e0e",
+  "scope": "training and validation only; reserve excluded",
+  "oscillator_axis": "log10(1+f/0.001)",
+  "cohorts": {
+    "train": {
+      "n": 308402,
+      "S1_eV_quantiles": [
+        1.3768,
+        3.9178,
+        5.9729,
+        8.2288,
+        14.8949
+      ],
+      "f_quantiles": [
+        0.0,
+        0.0043,
+        0.2034,
+        0.6146,
+        1.9634
+      ],
+      "zero_f_fraction": 0.04717543984799061,
+      "bright_f_ge_01_fraction": 0.17342624237196905
+    },
+    "validation": {
+      "n": 64549,
+      "S1_eV_quantiles": [
+        1.0449,
+        3.9008,
+        6.0588,
+        8.24536,
+        12.261
+      ],
+      "f_quantiles": [
+        0.0,
+        0.0035,
+        0.1457,
+        0.642455999999999,
+        1.7261
+      ],
+      "zero_f_fraction": 0.053013989372414756,
+      "bright_f_ge_01_fraction": 0.12759299137089652
+    }
+  }
+}
