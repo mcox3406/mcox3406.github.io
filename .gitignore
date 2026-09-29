@@ -13,6 +13,7 @@ node_modules/
 .env.*
 !.env.example
 local-notes/
+assets/cv.pdf
 __pycache__/
 
 # LaTeX build files

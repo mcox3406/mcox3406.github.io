@@ -9,7 +9,7 @@ Personal academic site, built with Jekyll and deployed to GitHub Pages by the wo
 | Bio (home page) | `index.md` |
 | Sidebar name, nav, links | `_config.yml` (`author`, `nav`, `links`) |
 | Publications | `_data/publications.yml` |
-| CV | LaTeX source in `cv-src/`; run `latexmk -pdf cox_resume_MIT.tex` there and copy the PDF to `assets/cv.pdf` |
+| CV (not published) | LaTeX source in `cv-src/`; `assets/cv.pdf` is ignored by Git and excluded from the site build |
 | Photo | put `assets/images/photo.jpg` in place and point the `<img>` in `index.md` at it |
 | Blog posts | `_posts/YYYY-MM-DD-slug.md`, with figures, data and notebooks in `assets/posts/<slug>/` |
 | Styles | `assets/css/main.css` |

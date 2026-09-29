@@ -15,7 +15,6 @@ nav:
   - { title: Publications, url: /publications/ }
   - { title: Blog,         url: /blog/ }
   - { title: Fun,          url: /fun/ }
-  - { title: CV,           url: /assets/cv.pdf }
 
 # Sidebar links (leave a url blank to hide it)
 links:
@@ -60,6 +59,7 @@ exclude:
   - vendor
   - notebooks
   - cv-src
+  - assets/cv.pdf
   - tests
   - services
   - scripts
