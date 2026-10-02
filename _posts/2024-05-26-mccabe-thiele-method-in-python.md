@@ -3,6 +3,7 @@ title: McCabe-Thiele Method in Python
 date: 2024-05-26
 description: A step-by-step implementation of stage counting for binary distillation in Python
 tags: [separations, python]
+thumbnail: /assets/posts/mccabe-thiele/final_mccabe_thiele_plot.png
 ---
 
 ## Introduction

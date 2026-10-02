@@ -13,10 +13,12 @@ Personal academic site, built with Jekyll and deployed to GitHub Pages by the wo
 | Photo | put `assets/images/photo.jpg` in place and point the `<img>` in `index.md` at it |
 | Blog posts | `_posts/YYYY-MM-DD-slug.md`, with figures, data and notebooks in `assets/posts/<slug>/` |
 | Styles | `assets/css/main.css` |
-| Blog index and projects | `blog/index.md`; add another project card here |
+| Blog index | `blog/index.md`, with thumbnail row styles in `assets/css/blog.css` |
 | Running statistics | `blog/running/index.html`, `assets/css/running.css`, `assets/js/running*.js`, `assets/data/running.json` |
 | Sidebar mark (unit cell) | `_includes/mark.svg`, favicon in `assets/favicon.svg` |
 | Homepage molecular landscape | `_includes/molecular-landscape.svg`; placement and opacity in the home section of `assets/css/main.css` |
+
+The Blog index combines posts and pages marked `blog_entry: true`, newest first. Set `date`, `title`, and `description` in front matter; use `thumbnail: /assets/...` for an image or `thumbnail_include: running-track.svg` for an SVG include. Entries without a thumbnail use a text-only row. The running page lives at `blog/running/index.html`; its entry date is separate from the data’s `last_updated` date.
 
 ## Writing a post
 

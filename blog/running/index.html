@@ -1,8 +1,11 @@
 ---
 layout: default
-title: Running
+title: Running Activity Analysis
+date: 2026-09-05 00:00:00 -0400
+blog_entry: true
+thumbnail_include: running-track.svg
 last_updated: "2026-09-10"
-description: Historical running distance, duration, pace, and time-of-day distributions.
+description: Distance, pace, routes, and temporal patterns in two years of running data.
 section: blog
 permalink: /blog/running/
 wide: true
@@ -15,7 +18,7 @@ scripts: [/assets/js/running-core.js, /assets/js/running-plots.js, /assets/js/ru
     <a href="{{ '/blog/' | relative_url }}">Blog</a><span aria-hidden="true">/</span><span>Running</span>
   </nav>
   <header class="rn-header">
-    <h1>Running</h1>
+    <h1>{{ page.title }}</h1>
     <p>Recorded running distance, routes, pace, heart rate, and time of day.</p>
   </header>
   <noscript><p class="rn-notice">Enable JavaScript to view the activity plots.</p></noscript>

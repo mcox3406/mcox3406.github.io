@@ -1,0 +1,31 @@
+/* Shared index layout for posts and interactive pages. */
+.blog-list { border-top: 1px solid var(--line); }
+.blog-entry { border-bottom: 1px solid var(--line); }
+.blog-entry-link { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 26px; align-items: center; padding: 26px 0; color: var(--ink); }
+.blog-entry-link:hover { text-decoration: none; }
+.blog-entry-link:hover h2 { color: var(--link); text-decoration: underline; text-underline-offset: 4px; }
+.blog-entry-text { grid-template-columns: 1fr; }
+.blog-thumbnail { aspect-ratio: 3 / 2; border: 1px solid var(--line); border-radius: 4px; overflow: hidden; background: #fff; }
+.blog-thumbnail img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.blog-thumbnail-illustration { display: grid; place-items: center; background: var(--code-bg); color: var(--ink-2); }
+.blog-entry-copy time { display: block; margin-bottom: 7px; color: var(--ink-3); font-size: .8rem; }
+.blog-entry-copy h2 { margin: 0 0 8px; font-size: 1.22rem; font-weight: 600; text-wrap: pretty; }
+.blog-entry-copy p { margin: 0; color: var(--ink-2); font-size: .92rem; line-height: 1.5; }
+.blog-track { display: block; width: 100%; height: 100%; }
+.blog-track-grid { stroke: currentColor; stroke-width: .5; opacity: .09; }
+.blog-track-surround { fill: var(--bg); stroke: var(--line); }
+.blog-track-surface { fill: #ac654e; }
+.blog-track-alternate { stroke: #f5dfca; opacity: .09; }
+.blog-track-infield { fill: var(--line); }
+.blog-track-lanes, .blog-track-numbers { stroke: #fae9d9; }
+.blog-track-detail { stroke: currentColor; opacity: .6; }
+.blog-track-caption { fill: currentColor; font: 7px var(--mono); letter-spacing: .07em; }
+.blog-track-index { fill: currentColor; font: 9px var(--mono); letter-spacing: .08em; }
+
+@media (max-width: 540px) {
+  .blog-entry-link { grid-template-columns: 104px minmax(0, 1fr); gap: 16px; align-items: start; padding: 22px 0; }
+  .blog-entry-text { grid-template-columns: 1fr; }
+  .blog-entry-copy h2 { font-size: 1.08rem; }
+  .blog-entry-copy p { font-size: .85rem; }
+  .blog-entry-copy time { font-size: .75rem; }
+}
