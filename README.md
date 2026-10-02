@@ -13,8 +13,8 @@ Personal academic site, built with Jekyll and deployed to GitHub Pages by the wo
 | Photo | put `assets/images/photo.jpg` in place and point the `<img>` in `index.md` at it |
 | Blog posts | `_posts/YYYY-MM-DD-slug.md`, with figures, data and notebooks in `assets/posts/<slug>/` |
 | Styles | `assets/css/main.css` |
-| Fun projects | `fun/index.html`; add another project card here |
-| Running statistics | `fun/running/index.html`, `assets/css/running.css`, `assets/js/running*.js`, `assets/data/running.json` |
+| Blog index and projects | `blog/index.md`; add another project card here |
+| Running statistics | `blog/running/index.html`, `assets/css/running.css`, `assets/js/running*.js`, `assets/data/running.json` |
 | Sidebar mark (unit cell) | `_includes/mark.svg`, favicon in `assets/favicon.svg` |
 | Homepage molecular landscape | `_includes/molecular-landscape.svg`; placement and opacity in the home section of `assets/css/main.css` |
 
@@ -41,6 +41,8 @@ jupyter nbconvert --to markdown notebook.ipynb --output-dir _posts --NbConvertAp
 
 then add front matter and fix the image paths. Interactive Bokeh or Plotly HTML can be saved in the same folder and included with `<div class="embed"><iframe src="..." height="500"></iframe></div>`.
 
+The molecular speedrun post stays in `_drafts/` with `published: false`, and its `assets/posts/molecular-speedrun/` folder is excluded in `_config.yml`. Remove those safeguards when it is ready to publish.
+
 ## Local preview
 
 ```sh
@@ -56,9 +58,9 @@ Server-side KaTeX needs a JavaScript runtime (Node) on the machine that builds t
 
 ## Running statistics
 
-`/fun/running/` displays cumulative year comparisons, regional route overlays, monthly pace distributions, pace versus average heart rate, estimated time-of-day running probability, and daily/weekly distance. Labels and descriptions are factual; there is no individual activity table. Editable page copy is in `fun/running/index.html`, with summary labels in `renderStats` in `assets/js/running.js`. It shares the site's type, colors, and light/dark themes. There are no training plans, AI requests, account connections, or background activity syncs. Data requests load two local static JSON files: the activity summary and derived plot details. The route view uses SVG with no map tiles or external geographic requests. Visualization ideas are acknowledged with an “Inspired in part by No Days Off” footer link.
+`/blog/running/` displays cumulative year comparisons, regional route overlays, monthly pace distributions, pace versus average heart rate, estimated time-of-day running probability, and daily/weekly distance. Labels and descriptions are factual; there is no individual activity table. Editable page copy is in `blog/running/index.html`, with summary labels in `renderStats` in `assets/js/running.js`. It shares the site's type, colors, and light/dark themes. There are no training plans, AI requests, account connections, or background activity syncs. Data requests load two local static JSON files: the activity summary and derived plot details. The route view uses SVG with no map tiles or external geographic requests. Visualization ideas are acknowledged with an “Inspired in part by No Days Off” footer link.
 
-The running page's visible update date is set by `last_updated` in `fun/running/index.html`. Update it when refreshing the page or its activity data.
+The running page's visible update date is set by `last_updated` in `blog/running/index.html`. Update it when refreshing the page or its activity data.
 
 ### Preserved planner and Strava work
 

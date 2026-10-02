@@ -1,5 +1,6 @@
 ---
 layout: post
+published: false
 title: "A molecular property prediction speedrun"
 date: 2026-09-29
 description: "One GPU. Unseen chemical families. How quickly can we learn molecular excited states?"
